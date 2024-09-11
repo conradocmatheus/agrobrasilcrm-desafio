@@ -3,10 +3,10 @@
 public class User
 {
     // Propriedades da classe User
-    public long Id { get; set; }
-    public string Name { get; set; }
-    public string? Email { get; set; }
-    public DateOnly Birthday { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    private long Id { get; set; }
+    private string Name { get; set; }
+    private string? Email { get; set; } // {?} permite ser nullable ou opcional
+    private DateOnly Birthday { get; set; }
+    private DateTime CreatedAt { get; set; }
+    private DateTime UpdatedAt { get; set; }
 }
