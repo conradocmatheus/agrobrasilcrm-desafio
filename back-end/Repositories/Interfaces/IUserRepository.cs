@@ -1,4 +1,4 @@
-﻿using back_end.Models;
+﻿using back_end.Models.Entities;
 
 namespace back_end.Repositories.Interfaces;
 
