@@ -1,8 +1,14 @@
-﻿namespace back_end.DTOs;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace back_end.DTOs;
 
 public class CreateUserDto
 {
-    public string Name { get; set; }
-    public string Email { get; set; }
+    [MaxLength(100)]
+    public required string Name { get; set; }
+
+    [EmailAddress]
+    public string? Email { get; set; }
+
     public DateTime Birthday { get; set; }
 }
