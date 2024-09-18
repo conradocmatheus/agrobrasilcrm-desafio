@@ -30,8 +30,8 @@ public class UserController : ControllerBase
         }
 
         var user = _mapper.Map<User>(createUserDto);
-        user.CreatedAt = DateTime.Now;
-        user.UpdatedAt = DateTime.Now;
+        user.CreatedAt = DateTime.UtcNow;// UTC para compatibilidade
+        user.UpdatedAt = DateTime.UtcNow;
 
         await _userRepository.AddUserAsync(user);
         return Ok(_mapper.Map<UserDto>(user));
