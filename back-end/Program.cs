@@ -1,5 +1,6 @@
 using back_end.Data;
 using back_end.Repositories;
+using back_end.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace back_end;
@@ -24,7 +25,11 @@ public class Program
             }));
         builder.Services.AddAutoMapper(typeof(Program));
 
+        // Registro do repository de User
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+    
+        // Registro do service de User
+        builder.Services.AddScoped<IUserService, UserService>();
 
         var app = builder.Build();
 

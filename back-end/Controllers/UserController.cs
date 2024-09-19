@@ -1,7 +1,5 @@
-using AutoMapper;
 using back_end.DTOs;
-using back_end.Models;
-using back_end.Repositories;
+using back_end.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Controllers;
@@ -10,13 +8,12 @@ namespace back_end.Controllers;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly IMapper _mapper;
-    private readonly IUserRepository _userRepository;
+    private readonly IUserService _userService;
 
-    public UserController(IMapper mapper, IUserRepository userRepository)
+    // Injeção de dependência userService
+    public UserController(IUserService userService)
     {
-        _mapper = mapper;
-        _userRepository = userRepository;
+        _userService = userService;
     }
 
     // POST User
@@ -24,16 +21,75 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
     {
+        // Primeiramente verifica se o modelo enviado na requisição json é valido
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-
-        var user = _mapper.Map<User>(createUserDto);
-        user.CreatedAt = DateTime.Now;
-        user.UpdatedAt = DateTime.Now;
-
-        await _userRepository.AddUserAsync(user);
-        return Ok(_mapper.Map<UserDto>(user));
+        // Depois chama o método do UserService e retorna 200 se der certo
+        try
+        {
+            var userDto = await _userService.CreateUserAsync(createUserDto);
+            return Ok(userDto);
+        }
+        // Se não, lança uma exceção genérica
+        catch(Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    // GET Users
+    // GET: /api/user/by-creation-date
+    [HttpGet]
+    [Route("/by-creation-date")]
+    public async Task<IActionResult> GetUsersByCreatedAt()
+    {
+        try
+        {
+            // Atribui o usuário criado pra userCreatedDto
+            var userCreatedAtDto = await _userService.GetUsersByCreatedAtAsync();
+            return Ok(userCreatedAtDto);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    // GET User by id
+    // GET: /api/user/by-id
+    [HttpGet]
+    [Route("/by-id/{id:Guid}")]
+    public async Task<IActionResult> GetUserById([FromRoute] Guid id)
+    {
+        try
+        {
+            // Atribui o usuário encontrado pra selectedUser
+            var selectedUser = await _userService.GetUserByIdAsync(id);
+            return Ok(selectedUser);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    // Delete User by id
+    // Delete: /api/user/by-id
+    [HttpDelete]
+    [Route("/by-id/{id:Guid}")]
+    public async Task<IActionResult> DeleteUserById([FromRoute] Guid id)
+    {
+        try
+        {
+            // Atribui o usuário deletado pra deletedUser
+            var deletedUser = await _userService.DeleteUserByIdAsync(id);
+            return Ok(deletedUser);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }

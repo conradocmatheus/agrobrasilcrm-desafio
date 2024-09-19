@@ -2,7 +2,7 @@
 
 public enum PaymentType
 {
-    Cash,
-    CreditCard,
-    DebitCard
+    Debit,
+    Credit,
+    Refund
 }
