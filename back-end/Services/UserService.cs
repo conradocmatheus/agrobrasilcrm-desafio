@@ -27,7 +27,7 @@ public class UserService : IUserService
         }
 
         // Mapeia o CreateUserDto para User
-        var user = _mapper.Map<Models.User>(createUserDto);
+        var user = _mapper.Map<User>(createUserDto);
 
         // Chama o repositório que salva o usuário no banco de dados
         await _userRepository.CreateUserAsync(user);
