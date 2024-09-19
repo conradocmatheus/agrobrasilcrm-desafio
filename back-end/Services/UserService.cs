@@ -35,11 +35,13 @@ public class UserService : IUserService
         return _mapper.Map<UserDto>(user);
 
     }
-
+    
     public async Task<List<UserCreatedAtDto>> GetUsersByCreatedAtAsync()
-    {
+    {   
+        // Coloca a lista que o método do repository retorna em uma var users
         var users = await _userRepository.GetUsersByCreatedAtAsync();
 
+        // E dps retorna a lista dos objetos user mapeados para Dto
         return _mapper.Map<List<UserCreatedAtDto>>(users);
     }
 

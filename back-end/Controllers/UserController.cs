@@ -52,7 +52,6 @@ public class UserController : ControllerBase
         }
         catch (Exception e)
         {
-            
             return BadRequest(e.Message);
         }
     }
