@@ -47,6 +47,7 @@ public class UserController : ControllerBase
     {
         try
         {
+            // Atribui o usuário criado pra userCreatedDto
             var userCreatedAtDto = await _userService.GetUsersByCreatedAtAsync();
             return Ok(userCreatedAtDto);
         }
@@ -64,6 +65,7 @@ public class UserController : ControllerBase
     {
         try
         {
+            // Atribui o usuário encontrado pra selectedUser
             var selectedUser = await _userService.GetUserByIdAsync(id);
             return Ok(selectedUser);
         }
@@ -81,6 +83,7 @@ public class UserController : ControllerBase
     {
         try
         {
+            // Atribui o usuário deletado pra deletedUser
             var deletedUser = await _userService.DeleteUserByIdAsync(id);
             return Ok(deletedUser);
         }
