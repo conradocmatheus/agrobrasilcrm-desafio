@@ -32,12 +32,16 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> DeleteUserByIdAsync(Guid id)
     {
+        // Pega o usuário com o id fornecido ou null se não encontrar
         var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+        
         if (existingUser == null)
         {
             return null;
+            
         }
-
+        
+        // Remove o usuário do banco, salva e retorna o próprio
         _context.Users.Remove(existingUser);
         await _context.SaveChangesAsync();
         return existingUser;

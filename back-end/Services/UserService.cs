@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using back_end.DTOs;
+using back_end.Models;
 using back_end.Repositories;
 
 namespace back_end.Services;
@@ -45,8 +46,20 @@ public class UserService : IUserService
         return _mapper.Map<List<UserCreatedAtDto>>(users);
     }
 
+    public async Task<UserDto?> GetUserByIdAsync(Guid id)
+    {
+        var foundUser = await _userRepository.GetUserByIdAsync(id);
+        return foundUser == null ? null : _mapper.Map<UserDto>(foundUser);
+    }
+
+    public async Task<UserDto?> DeleteUserByIdAsync(Guid id)
+    {
+        var deletedUser = await _userRepository.DeleteUserByIdAsync(id);
+        return deletedUser == null ? null : _mapper.Map<UserDto>(deletedUser);
+    }
+
     // Método que verifica se o usuário é um adulto
-    private bool IsAdult(DateTime birthday)
+    private static bool IsAdult(DateTime birthday)
     {
         var today = DateTime.Today;
         var userAge = today.Year - birthday.Year;

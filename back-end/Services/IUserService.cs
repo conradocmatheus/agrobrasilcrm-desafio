@@ -6,4 +6,6 @@ public interface IUserService
 {
     Task<UserDto> CreateUserAsync(CreateUserDto createUserDto);
     Task<List<UserCreatedAtDto>> GetUsersByCreatedAtAsync();
+    Task<UserDto?> GetUserByIdAsync(Guid id);
+    Task<UserDto?> DeleteUserByIdAsync(Guid id);
 }
