@@ -4,5 +4,5 @@ namespace back_end.Services;
 
 public interface IUserService
 {
-    Task CreateUserAsync(CreateUserDto createUserDto);
+    Task<UserDto> CreateUserAsync(CreateUserDto createUserDto);
 }

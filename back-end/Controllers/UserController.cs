@@ -2,6 +2,7 @@ using AutoMapper;
 using back_end.DTOs;
 using back_end.Models;
 using back_end.Repositories;
+using back_end.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Controllers;
@@ -10,13 +11,12 @@ namespace back_end.Controllers;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly IMapper _mapper;
-    private readonly IUserRepository _userRepository;
+    private readonly IUserService _userService;
 
-    public UserController(IMapper mapper, IUserRepository userRepository)
+    // Injeção de dependência userService
+    public UserController(IUserService userService)
     {
-        _mapper = mapper;
-        _userRepository = userRepository;
+        _userService = userService;
     }
 
     // POST User
@@ -24,16 +24,21 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
     {
+        // Primeiramente verifica se o modelo enviado na requisição json é valido
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-
-        var user = _mapper.Map<User>(createUserDto);
-        user.CreatedAt = DateTime.UtcNow;// UTC para compatibilidade
-        user.UpdatedAt = DateTime.UtcNow;
-
-        await _userRepository.AddUserAsync(user);
-        return Ok(_mapper.Map<UserDto>(user));
+        // Depois chama o método do UserService e retorna 200 se der certo
+        try
+        {
+            var userDto = await _userService.CreateUserAsync(createUserDto);
+            return Ok(userDto);
+        }
+        // Se não, lança uma exceção genérica
+        catch(Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }
