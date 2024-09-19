@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using back_end.DTOs;
-using back_end.Models;
 using back_end.Repositories;
 
 namespace back_end.Services;
@@ -27,7 +26,7 @@ public class UserService : IUserService
         }
 
         // Mapeia o CreateUserDto para User
-        var user = _mapper.Map<User>(createUserDto);
+        var user = _mapper.Map<Models.User>(createUserDto);
 
         // Chama o repositório que salva o usuário no banco de dados
         await _userRepository.AddUserAsync(user);
@@ -35,6 +34,13 @@ public class UserService : IUserService
         // Retorna o UserDto mapeado de user
         return _mapper.Map<UserDto>(user);
 
+    }
+
+    public async Task<List<UserCreatedAtDto>> GetUsersByCreatedAtAsync()
+    {
+        var users = await _userRepository.GetUsersByCreatedAtAsync();
+
+        return _mapper.Map<List<UserCreatedAtDto>>(users);
     }
 
     // Método que verifica se o usuário é um adulto

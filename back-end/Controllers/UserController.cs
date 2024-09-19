@@ -1,7 +1,4 @@
-using AutoMapper;
 using back_end.DTOs;
-using back_end.Models;
-using back_end.Repositories;
 using back_end.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,6 +35,24 @@ public class UserController : ControllerBase
         // Se não, lança uma exceção genérica
         catch(Exception e)
         {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    // GET Users
+    // GET: /api/users/by-creation-date
+    [HttpGet]
+    [Route("/by-creation-date")]
+    public async Task<IActionResult> GetUsersByCreatedAt()
+    {
+        try
+        {
+            var userCreatedAtDto = await _userService.GetUsersByCreatedAtAsync();
+            return Ok(userCreatedAtDto);
+        }
+        catch (Exception e)
+        {
+            
             return BadRequest(e.Message);
         }
     }

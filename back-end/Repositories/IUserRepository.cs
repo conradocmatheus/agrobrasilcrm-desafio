@@ -1,10 +1,9 @@
-﻿using back_end.DTOs;
-using back_end.Models;
+﻿using back_end.Models;
 
 namespace back_end.Repositories;
 
 public interface IUserRepository
 {
     Task AddUserAsync(User user);
-    Task <List<User>> GetUsersByCreatedAtAsync(Guid id);
+    Task<List<User>> GetUsersByCreatedAtAsync();
 }

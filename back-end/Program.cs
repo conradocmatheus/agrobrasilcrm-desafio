@@ -25,10 +25,10 @@ public class Program
             }));
         builder.Services.AddAutoMapper(typeof(Program));
 
-        // Registro dos repositórios e serviços
+        // Registro do repository de User
         builder.Services.AddScoped<IUserRepository, UserRepository>();
     
-        // Registre o serviço IUserService
+        // Registro do service de User
         builder.Services.AddScoped<IUserService, UserService>();
 
         var app = builder.Build();
