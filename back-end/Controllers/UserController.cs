@@ -40,7 +40,7 @@ public class UserController : ControllerBase
     }
     
     // GET Users
-    // GET: /api/users/by-creation-date
+    // GET: /api/user/by-creation-date
     [HttpGet]
     [Route("/by-creation-date")]
     public async Task<IActionResult> GetUsersByCreatedAt()
@@ -49,6 +49,40 @@ public class UserController : ControllerBase
         {
             var userCreatedAtDto = await _userService.GetUsersByCreatedAtAsync();
             return Ok(userCreatedAtDto);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    // GET User by id
+    // GET: /api/user/by-id
+    [HttpGet]
+    [Route("/by-id/{id:Guid}")]
+    public async Task<IActionResult> GetUserById([FromRoute] Guid id)
+    {
+        try
+        {
+            var selectedUser = await _userService.GetUserByIdAsync(id);
+            return Ok(selectedUser);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    // Delete User by id
+    // Delete: /api/user/by-id
+    [HttpDelete]
+    [Route("/by-id/{id:Guid}")]
+    public async Task<IActionResult> DeleteUserById([FromRoute] Guid id)
+    {
+        try
+        {
+            var deletedUser = await _userService.DeleteUserByIdAsync(id);
+            return Ok(deletedUser);
         }
         catch (Exception e)
         {
