@@ -37,6 +37,7 @@ public class UserService : IUserService
 
     }
     
+    // Mudar retorno para UserDto dps, ou criar outra DTO
     public async Task<List<UserCreatedAtDto>> GetUsersByCreatedAtAsync()
     {   
         // Coloca a lista que o método do repository retorna em uma var users
