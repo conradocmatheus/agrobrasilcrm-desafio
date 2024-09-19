@@ -48,13 +48,17 @@ public class UserService : IUserService
 
     public async Task<UserDto?> GetUserByIdAsync(Guid id)
     {
+        // Atribui o usuário encontrado por id a uma variável(foundUser)
         var foundUser = await _userRepository.GetUserByIdAsync(id);
+        // Retorna o usuário encontrado ou null, no formato de UserDto
         return foundUser == null ? null : _mapper.Map<UserDto>(foundUser);
     }
 
     public async Task<UserDto?> DeleteUserByIdAsync(Guid id)
     {
+        // Atribui o usuário deletado por id a uma variável(deletedUser)
         var deletedUser = await _userRepository.DeleteUserByIdAsync(id);
+        // Retorna o usuário deletado ou null, no formato de UserDto
         return deletedUser == null ? null : _mapper.Map<UserDto>(deletedUser);
     }
 
