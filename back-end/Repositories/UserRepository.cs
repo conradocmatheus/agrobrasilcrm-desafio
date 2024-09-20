@@ -1,6 +1,5 @@
 ﻿using back_end.Data;
 using back_end.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace back_end.Repositories;
@@ -34,16 +33,32 @@ public class UserRepository : IUserRepository
     {
         // Pega o usuário com o id fornecido ou null se não encontrar
         var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-        
+
         if (existingUser == null)
         {
             return null;
-            
         }
-        
+
         // Remove o usuário do banco, salva e retorna o próprio
         _context.Users.Remove(existingUser);
         await _context.SaveChangesAsync();
         return existingUser;
+    }
+
+    public async Task<User?> UpdateUserAsync(User user, Guid id)
+    {
+        var toUpdateUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+        if (toUpdateUser == null)
+        {
+            return null;
+        }
+
+        toUpdateUser.Name = user.Name;
+        toUpdateUser.Email = user.Email;
+        toUpdateUser.Birthday = user.Birthday;
+        toUpdateUser.UpdatedAt = DateTime.Now;
+
+        await _context.SaveChangesAsync();
+        return toUpdateUser;
     }
 }

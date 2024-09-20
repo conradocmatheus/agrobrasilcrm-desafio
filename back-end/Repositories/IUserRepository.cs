@@ -8,4 +8,5 @@ public interface IUserRepository
     Task<List<User>> GetUsersByCreatedAtAsync();
     Task<User?> GetUserByIdAsync(Guid id);
     Task<User?> DeleteUserByIdAsync(Guid id);
+    Task<User?> UpdateUserAsync(User user, Guid id);
 }
