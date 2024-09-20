@@ -1,6 +1,5 @@
 ﻿using back_end.DTOs;
 using back_end.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Controllers;
@@ -19,7 +18,7 @@ public class ProductController : ControllerBase
     // POST Product
     // POST: /api/product/post
     [HttpPost]
-    [Route("/post")]
+    [Route("post")]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
     {
         if (!ModelState.IsValid)
@@ -39,9 +38,9 @@ public class ProductController : ControllerBase
     }
 
     // PUT Product by id
-    // PUT: /api/product/update/by-id/{id}
+    // PUT: /api/product/update/{id}
     [HttpPut]
-    [Route("/update/by-id")]
+    [Route("update/{id:Guid}")]
     public async Task<IActionResult> UpdateProductById([FromBody] CreateProductDto createProductDto,
         [FromRoute] Guid id)
     {
@@ -57,16 +56,15 @@ public class ProductController : ControllerBase
         }
         catch (Exception e)
         {
-            throw new Exception(e.Message);
+            return BadRequest(e.Message);
         }
     }
-    
+
     // DELETE Product by id
-    // DELETE: /api/product/by-id/{id}
+    // DELETE: /api/product/delete/{id}
     [HttpDelete]
-    [Route("/delete/by-id/{id:Guid}")]
-    public async Task<IActionResult> DeleteProductById([FromBody] CreateProductDto createProductDto,
-        [FromRoute] Guid id)
+    [Route("delete/{id:Guid}")]
+    public async Task<IActionResult> DeleteProductById([FromRoute] Guid id)
     {
         try
         {
@@ -75,14 +73,14 @@ public class ProductController : ControllerBase
         }
         catch (Exception e)
         {
-            throw new Exception(e.Message);
+            return BadRequest(e.Message);
         }
     }
 
     // GET Products
     // GET: /api/product/get-all
     [HttpGet]
-    [Route("/get-all/")]
+    [Route("get-all")]
     public async Task<IActionResult> GetAllProducts()
     {
         try
