@@ -93,4 +93,21 @@ public class ProductController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    
+    // GET Products by id
+    // GET: /api/product/{id}
+    [HttpGet]
+    [Route("{id:Guid}")]
+    public async Task<IActionResult> GetProductById(Guid id)
+    {
+        try
+        {
+            var selectedProduct = await _productService.GetProductByIdAsync(id);
+            return Ok(selectedProduct);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }
