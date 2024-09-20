@@ -16,7 +16,7 @@ public class ProductController : ControllerBase
     }
     
     // POST Product
-    // POST: /api/user/post
+    // POST: /api/product/post
     [HttpPost]
     [Route("/post")]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
@@ -29,6 +29,23 @@ public class ProductController : ControllerBase
         try
         {
             var productDto = await _productService.CreateProductAsync(createProductDto);
+            return Ok(productDto);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    // GET Products
+    // GET: /api/product/get-all
+    [HttpGet]
+    [Route("/get-all/")]
+    public async Task<IActionResult> GetAllProducts()
+    {
+        try
+        {
+            var productDto = await _productService.GetAllProducts();
             return Ok(productDto);
         }
         catch (Exception e)
