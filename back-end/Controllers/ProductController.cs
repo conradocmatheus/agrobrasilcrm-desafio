@@ -1,0 +1,39 @@
+﻿using back_end.DTOs;
+using back_end.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace back_end.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class ProductController : ControllerBase
+{
+    private readonly IProductService _productService;
+
+    public ProductController(IProductService productService)
+    {
+        _productService = productService;
+    }
+    
+    // POST Product
+    // POST: /api/user/post
+    [HttpPost]
+    [Route("/post")]
+    public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var productDto = await _productService.CreateProductAsync(createProductDto);
+            return Ok(productDto);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+}
