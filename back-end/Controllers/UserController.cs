@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace back_end.Controllers;
 
 // Mudar ordem para melhor organizacao dps
+// Melhorar os catchs, retorno errado
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
