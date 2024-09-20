@@ -21,7 +21,7 @@ public class UserController : ControllerBase
     // POST User
     // POST: /api/user
     [HttpPost]
-    [Route("/post")]
+    [Route("post")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
     {
         // Primeiramente verifica se o modelo enviado na requisição json é valido
@@ -45,7 +45,7 @@ public class UserController : ControllerBase
     // GET Users
     // GET: /api/user/by-creation-date
     [HttpGet]
-    [Route("/get/by-creation-date")]
+    [Route("get/by-creation-date")]
     public async Task<IActionResult> GetUsersByCreatedAt()
     {
         try
@@ -63,7 +63,7 @@ public class UserController : ControllerBase
     // GET User by id
     // GET: /api/user/by-id
     [HttpGet]
-    [Route("/get/by-id/{id:Guid}")]
+    [Route("get/by-id/{id:Guid}")]
     public async Task<IActionResult> GetUserById([FromRoute] Guid id)
     {
         try
@@ -81,7 +81,7 @@ public class UserController : ControllerBase
     // Delete User by id
     // Delete: /api/user/by-id
     [HttpDelete]
-    [Route("/delete/by-id/{id:Guid}")]
+    [Route("delete/by-id/{id:Guid}")]
     public async Task<IActionResult> DeleteUserById([FromRoute] Guid id)
     {
         try
@@ -99,7 +99,7 @@ public class UserController : ControllerBase
     // Update User by id
     // Update: /api/user/by-id
     [HttpPut]
-    [Route("/update/by-id/{id:Guid}")]
+    [Route("update/by-id/{id:Guid}")]
     public async Task<IActionResult> UpdateUserById([FromBody] CreateUserDto createUserDto, [FromRoute] Guid id)
     {
         // Verifica o corpo da requisição, se esta tudo nos conformes...
