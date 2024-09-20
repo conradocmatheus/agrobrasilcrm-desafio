@@ -20,7 +20,21 @@ public class ProductService : IProductService
     {
         var product = _mapper.Map<Product>(createProductDto);
         await _productRepository.CreateProductAsync(product);
-        return _mapper.Map<CreateProductDto>(createProductDto);
+        return createProductDto;
+    }
+
+    public async Task<ProductDto?> UpdateProductAsync(UpdateProductDto updateProductDto, Guid id)
+    {
+        var product = _mapper.Map<Product>(updateProductDto);
+        await _productRepository.UpdateProductAsync(product, id);
+        return _mapper.Map<ProductDto>(updateProductDto);
+        // Produto retorna com id toda zerada na respota, mas fica certo no banco
+    }
+    
+    public async Task<ProductDto?> DeleteProductByIdAsync(Guid id)
+    {
+        var deletedProduct = await _productRepository.DeleteProductByIdAsync(id);
+        return deletedProduct == null ? null : _mapper.Map<ProductDto>(deletedProduct);
     }
 
     public async Task<List<ProductDto>> GetAllProducts()
@@ -33,11 +47,5 @@ public class ProductService : IProductService
     {
         var foundProduct = await _productRepository.GetProductByIdAsync(id);
         return foundProduct == null ? null : _mapper.Map<ProductDto>(foundProduct);
-    }
-
-    public async Task<ProductDto?> DeleteProductByIdAsync(Guid id)
-    {
-        var deletedProduct = await _productRepository.DeleteProductByIdAsync(id);
-        return deletedProduct == null ? null : _mapper.Map<ProductDto>(deletedProduct);
     }
 }

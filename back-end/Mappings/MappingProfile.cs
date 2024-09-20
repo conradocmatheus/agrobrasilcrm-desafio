@@ -13,5 +13,8 @@ public class MappingProfile : Profile
         CreateMap<User, UserCreatedAtDto>().ReverseMap();
 
         CreateMap<Product, CreateProductDto>().ReverseMap();
+        CreateMap<Product, ProductDto>().ReverseMap();
+        CreateMap<Product, UpdateProductDto>().ReverseMap();
+        CreateMap<UpdateProductDto, ProductDto>().ReverseMap();
     }
 }
