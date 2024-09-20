@@ -1,5 +1,6 @@
 ﻿using back_end.DTOs;
 using back_end.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Controllers;
@@ -37,8 +38,8 @@ public class ProductController : ControllerBase
         }
     }
 
-    // Update Product by id
-    // Update: /api/product/update/by-id/{id}
+    // PUT Product by id
+    // PUT: /api/product/update/by-id/{id}
     [HttpPut]
     [Route("/update/by-id")]
     public async Task<IActionResult> UpdateProductById([FromBody] CreateProductDto createProductDto,
@@ -58,7 +59,24 @@ public class ProductController : ControllerBase
         {
             throw new Exception(e.Message);
         }
-        
+    }
+    
+    // DELETE Product by id
+    // DELETE: /api/product/by-id/{id}
+    [HttpDelete]
+    [Route("/delete/by-id/{id:Guid}")]
+    public async Task<IActionResult> DeleteProductById([FromBody] CreateProductDto createProductDto,
+        [FromRoute] Guid id)
+    {
+        try
+        {
+            var deletedUser = await _productService.DeleteProductByIdAsync(id);
+            return Ok(deletedUser);
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
     }
 
     // GET Products
