@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Controllers;
 
+// Mudar ordem para melhor organizacao dps
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
