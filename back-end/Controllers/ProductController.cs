@@ -41,7 +41,7 @@ public class ProductController : ControllerBase
     // PUT: /api/product/update/{id}
     [HttpPut]
     [Route("update/{id:Guid}")]
-    public async Task<IActionResult> UpdateProductById([FromBody] CreateProductDto createProductDto,
+    public async Task<IActionResult> UpdateProductById([FromBody] UpdateProductDto updateProductDto,
         [FromRoute] Guid id)
     {
         if (!ModelState.IsValid)
@@ -51,7 +51,7 @@ public class ProductController : ControllerBase
 
         try
         {
-            var productDto = await _productService.UpdateProductAsync(createProductDto, id);
+            var productDto = await _productService.UpdateProductAsync(updateProductDto, id);
             return Ok(productDto);
         }
         catch (Exception e)

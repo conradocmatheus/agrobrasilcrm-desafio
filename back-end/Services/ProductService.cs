@@ -23,11 +23,12 @@ public class ProductService : IProductService
         return createProductDto;
     }
 
-    public async Task<ProductDto?> UpdateProductAsync(CreateProductDto createProductDto, Guid id)
+    public async Task<ProductDto?> UpdateProductAsync(UpdateProductDto updateProductDto, Guid id)
     {
-        var product = _mapper.Map<Product>(createProductDto);
+        var product = _mapper.Map<Product>(updateProductDto);
         await _productRepository.UpdateProductAsync(product, id);
-        return _mapper.Map<ProductDto>(createProductDto);
+        return _mapper.Map<ProductDto>(updateProductDto);
+        // Produto retorna com id toda zerada na respota, mas fica certo no banco
     }
     
     public async Task<ProductDto?> DeleteProductByIdAsync(Guid id)
