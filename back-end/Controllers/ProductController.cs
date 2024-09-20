@@ -14,7 +14,7 @@ public class ProductController : ControllerBase
     {
         _productService = productService;
     }
-    
+
     // POST Product
     // POST: /api/product/post
     [HttpPost]
@@ -36,7 +36,31 @@ public class ProductController : ControllerBase
             return BadRequest(e.Message);
         }
     }
-    
+
+    // Update Product by id
+    // Update: /api/product/update/by-id/{id}
+    [HttpPut]
+    [Route("/update/by-id")]
+    public async Task<IActionResult> UpdateProductById([FromBody] CreateProductDto createProductDto,
+        [FromRoute] Guid id)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var productDto = await _productService.UpdateProductAsync(createProductDto, id);
+            return Ok(productDto);
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+        
+    }
+
     // GET Products
     // GET: /api/product/get-all
     [HttpGet]
