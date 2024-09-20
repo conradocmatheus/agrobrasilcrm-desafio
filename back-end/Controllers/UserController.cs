@@ -92,4 +92,30 @@ public class UserController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    
+    // Update User by id
+    // Update: /api/user/by-id
+    [HttpPut]
+    [Route("/by-id/{id:Guid}")]
+    public async Task<IActionResult> UpdateUserById([FromBody] CreateUserDto createUserDto, [FromRoute] Guid id)
+    {
+        // Verifica o corpo da requisição, se esta tudo nos conformes...
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
+        // Tenta atualizar o usuário chamando o método do service
+        try
+        {
+            var userDto = await _userService.UpdateUserAsync(createUserDto, id);
+            return Ok(userDto);
+        }
+        // Se não conseguir, lança uma exception
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
+
 }
