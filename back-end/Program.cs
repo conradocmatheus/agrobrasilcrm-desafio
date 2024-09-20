@@ -24,13 +24,15 @@ public class Program
                 sqlOptions.EnableRetryOnFailure();
             }));
         builder.Services.AddAutoMapper(typeof(Program));
-
-        // Registro do repository de User
+        
+        // Registro dos Repositories
         builder.Services.AddScoped<IUserRepository, UserRepository>();
-    
-        // Registro do service de User
+        builder.Services.AddScoped<IProductRepository, ProductRepository>();
+        
+        // Registro dos Services
         builder.Services.AddScoped<IUserService, UserService>();
-
+        builder.Services.AddScoped<IProductService, ProductService>();
+        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
