@@ -18,17 +18,24 @@ public class ProductRepository : IProductRepository
         _context.Products.Add(product);
         await _context.SaveChangesAsync();
     }
-
-    public async Task<List<Product>> GetAllProductsAsync()
+    
+    public async Task<Product?> UpdateProductAsync(Product product, Guid id)
     {
-        return await _context.Products.ToListAsync();
-    }
+        var toUpdateProduct = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
 
-    public async Task<Product?> GetProductByIdAsync(Guid id)
-    {
-        return await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
-    }
+        if (toUpdateProduct == null)
+        {
+            return null;
+        }
 
+        toUpdateProduct.Name = product.Name;
+        toUpdateProduct.Price = product.Price;
+        toUpdateProduct.Quantity = product.Quantity;
+
+        await _context.SaveChangesAsync();
+        return null;
+    }
+    
     public async Task<Product?> DeleteProductByIdAsync(Guid id)
     {
         var existingProduct = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
@@ -41,5 +48,15 @@ public class ProductRepository : IProductRepository
         _context.Products.Remove(existingProduct);
         await _context.SaveChangesAsync();
         return existingProduct;
+    }
+
+    public async Task<List<Product>> GetAllProductsAsync()
+    {
+        return await _context.Products.ToListAsync();
+    }
+
+    public async Task<Product?> GetProductByIdAsync(Guid id)
+    {
+        return await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
     }
 }
