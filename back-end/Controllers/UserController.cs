@@ -19,6 +19,7 @@ public class UserController : ControllerBase
     // POST User
     // POST: /api/user
     [HttpPost]
+    [Route("/post")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
     {
         // Primeiramente verifica se o modelo enviado na requisição json é valido
@@ -42,7 +43,7 @@ public class UserController : ControllerBase
     // GET Users
     // GET: /api/user/by-creation-date
     [HttpGet]
-    [Route("/by-creation-date")]
+    [Route("/get/by-creation-date")]
     public async Task<IActionResult> GetUsersByCreatedAt()
     {
         try
@@ -60,7 +61,7 @@ public class UserController : ControllerBase
     // GET User by id
     // GET: /api/user/by-id
     [HttpGet]
-    [Route("/by-id/{id:Guid}")]
+    [Route("/get/by-id/{id:Guid}")]
     public async Task<IActionResult> GetUserById([FromRoute] Guid id)
     {
         try
@@ -78,7 +79,7 @@ public class UserController : ControllerBase
     // Delete User by id
     // Delete: /api/user/by-id
     [HttpDelete]
-    [Route("/by-id/{id:Guid}")]
+    [Route("/delete/by-id/{id:Guid}")]
     public async Task<IActionResult> DeleteUserById([FromRoute] Guid id)
     {
         try
@@ -92,4 +93,30 @@ public class UserController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    
+    // Update User by id
+    // Update: /api/user/by-id
+    [HttpPut]
+    [Route("/update/by-id/{id:Guid}")]
+    public async Task<IActionResult> UpdateUserById([FromBody] CreateUserDto createUserDto, [FromRoute] Guid id)
+    {
+        // Verifica o corpo da requisição, se esta tudo nos conformes...
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
+        // Tenta atualizar o usuário chamando o método do service
+        try
+        {
+            var userDto = await _userService.UpdateUserAsync(createUserDto, id);
+            return Ok(userDto);
+        }
+        // Se não conseguir, lança uma exception
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
+
 }

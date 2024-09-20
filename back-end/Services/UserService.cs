@@ -63,6 +63,18 @@ public class UserService : IUserService
         return deletedUser == null ? null : _mapper.Map<UserDto>(deletedUser);
     }
 
+    public async Task<UserDto?> UpdateUserAsync(CreateUserDto createUserDto, Guid id)
+    {
+        // Mapeia de createUserDto pra User
+        var toUpdateUser = _mapper.Map<User>(createUserDto);
+        
+        // Atualiza toUpdateUser com o id fornecido
+        await _userRepository.UpdateUserAsync(toUpdateUser, id);
+        
+        // Mapeia novamente e retorna
+        return _mapper.Map<UserDto>(toUpdateUser);
+    }
+
     // Método que verifica se o usuário é um adulto
     private static bool IsAdult(DateTime birthday)
     {
