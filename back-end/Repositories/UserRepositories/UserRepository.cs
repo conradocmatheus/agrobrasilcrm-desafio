@@ -30,12 +30,19 @@ public class UserRepository : IUserRepository
 
     public async Task<List<User>> GetUsersByCreatedAtAsync()
     {
-        return await _context.Users.OrderBy(user => user.CreatedAt).ToListAsync();
+        // Retorna o usuário pelo ID ou nulo se não for encontrado
+        return await _context.Users
+            .OrderBy(user => user.CreatedAt)
+            .AsNoTracking() // Melhora a performance
+            .ToListAsync();
     }
 
     public async Task<User?> GetUserByIdAsync(Guid id)
     {
-        return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+        // Retorna o usuário pelo ID ou nulo se não for encontrado
+        return await _context.Users
+            .AsNoTracking() // Melhora a performance
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<User?> DeleteUserByIdAsync(Guid id)

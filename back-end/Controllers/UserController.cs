@@ -54,11 +54,16 @@ public class UserController(IUserService userService) : ControllerBase
         {
             // Atribui o usuário criado pra userCreatedDto
             var userCreatedAtDto = await userService.GetUsersByCreatedAtAsync();
+            // Verifica se tem algum usuário na lista
+            if (userCreatedAtDto.Count == 0)
+            {
+                return NotFound("Nenhum usuário foi encontrado");
+            }
             return Ok(userCreatedAtDto);
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(500, "Erro interno no servidor.");
         }
     }
     
@@ -72,11 +77,16 @@ public class UserController(IUserService userService) : ControllerBase
         {
             // Atribui o usuário encontrado pra selectedUser
             var selectedUser = await userService.GetUserByIdAsync(id);
+            // Verifica se o usuário foi encontrado
+            if (selectedUser == null)
+            {
+                return NotFound($"Usuário com ID {id} não foi encontrado");
+            }
             return Ok(selectedUser);
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return StatusCode(500, "Erro interno no servidor.");
         }
     }
     
