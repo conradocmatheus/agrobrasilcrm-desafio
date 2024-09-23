@@ -44,37 +44,6 @@ public class UserService : IUserService
 
     }
     
-    // Mudar retorno para UserDto dps, ou criar outra DTO
-    public async Task<List<UserCreatedAtDto>> GetUsersByCreatedAtAsync()
-    {
-        try
-        {
-            // Atribui a lista que o método do repository retorna em uma var users
-            var users = await _userRepository.GetUsersByCreatedAtAsync();
-            // E dps retorna a lista dos objetos user mapeados para Dto
-            return _mapper.Map<List<UserCreatedAtDto>>(users);
-        }
-        catch (Exception e)
-        {
-            throw new InvalidOperationException("Erro ao obter lista de usuários", e);
-        }
-    }
-
-    public async Task<UserDto?> GetUserByIdAsync(Guid id)
-    {
-        try
-        {
-            // Atribui o usuário encontrado por id a uma variável(foundUser)
-            var foundUser = await _userRepository.GetUserByIdAsync(id);
-            // Retorna o usuário encontrado ou null, no formato de UserDto
-            return foundUser == null ? null : _mapper.Map<UserDto>(foundUser);
-        }
-        catch (Exception e)
-        {
-            throw new InvalidOperationException("Erro ao obter usuário.", e);
-        }
-    }
-
     public async Task<UserDto?> DeleteUserByIdAsync(Guid id)
     {
         try
@@ -106,6 +75,37 @@ public class UserService : IUserService
         catch (Exception e)
         {
             throw new InvalidOperationException("Erro ao atualizar usuário.", e);
+        }
+    }
+    
+    // Mudar retorno para UserDto dps, ou criar outra DTO
+    public async Task<List<UserCreatedAtDto>> GetUsersByCreatedAtAsync()
+    {
+        try
+        {
+            // Atribui a lista que o método do repository retorna em uma var users
+            var users = await _userRepository.GetUsersByCreatedAtAsync();
+            // E dps retorna a lista dos objetos user mapeados para Dto
+            return _mapper.Map<List<UserCreatedAtDto>>(users);
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("Erro ao obter lista de usuários", e);
+        }
+    }
+
+    public async Task<UserDto?> GetUserByIdAsync(Guid id)
+    {
+        try
+        {
+            // Atribui o usuário encontrado por id a uma variável(foundUser)
+            var foundUser = await _userRepository.GetUserByIdAsync(id);
+            // Retorna o usuário encontrado ou null, no formato de UserDto
+            return foundUser == null ? null : _mapper.Map<UserDto>(foundUser);
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("Erro ao obter usuário.", e);
         }
     }
 
