@@ -4,15 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace back_end.Repositories.ProductRepositories;
 
-public class ProductRepository : IProductRepository
+public class ProductRepository(AppDbContext context) : IProductRepository
 {
-    private readonly AppDbContext _context;
-
-    public ProductRepository(AppDbContext context)
-    {
-        _context = context;
-    }
-    
     // Criar produto no banco
     public async Task<Product> CreateProductAsync(Product product)
     {
@@ -20,8 +13,8 @@ public class ProductRepository : IProductRepository
         product.Id = Guid.NewGuid();
         
         // Adiciona e salva o produto no banco
-        _context.Products.Add(product);
-        await _context.SaveChangesAsync();
+        context.Products.Add(product);
+        await context.SaveChangesAsync();
         
         // Retorna o produto
         return product;
@@ -32,7 +25,7 @@ public class ProductRepository : IProductRepository
     {
         try
         {
-            var toUpdateProduct = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+            var toUpdateProduct = await context.Products.FirstOrDefaultAsync(x => x.Id == id);
 
             if (toUpdateProduct == null)
             {
@@ -44,7 +37,7 @@ public class ProductRepository : IProductRepository
             toUpdateProduct.Price = product.Price;
             toUpdateProduct.Quantity = product.Quantity;
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return toUpdateProduct; // Retorna o produto atualizado
         }
         catch (DbUpdateException e)
@@ -58,7 +51,7 @@ public class ProductRepository : IProductRepository
     {
         try
         {
-            var existingProduct = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+            var existingProduct = await context.Products.FirstOrDefaultAsync(x => x.Id == id);
 
             if (existingProduct == null)
             {
@@ -66,8 +59,8 @@ public class ProductRepository : IProductRepository
             }
 
             // Remove o produto do banco, salva e retorna o próprio produto removido
-            _context.Products.Remove(existingProduct);
-            await _context.SaveChangesAsync();
+            context.Products.Remove(existingProduct);
+            await context.SaveChangesAsync();
             return existingProduct;
         }
         catch (DbUpdateException e)
@@ -79,13 +72,13 @@ public class ProductRepository : IProductRepository
     // Lista todos os produtos
     public async Task<List<Product>> GetAllProductsAsync()
     {
-        return await _context.Products.AsNoTracking().ToListAsync();
+        return await context.Products.AsNoTracking().ToListAsync();
 
     }
 
     // Encontra um produto por ID
     public async Task<Product?> GetProductByIdAsync(Guid id)
     {
-        return await _context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        return await context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 }
