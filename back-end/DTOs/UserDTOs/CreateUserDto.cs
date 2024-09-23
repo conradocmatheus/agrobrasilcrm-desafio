@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using back_end.Filters;
 
-namespace back_end.DTOs;
+namespace back_end.DTOs.UserDTOs;
 
 public class CreateUserDto
 {

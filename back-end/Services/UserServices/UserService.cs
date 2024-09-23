@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using back_end.DTOs;
+using back_end.DTOs.UserDTOs;
 using back_end.Models;
-using back_end.Repositories;
+using back_end.Repositories.UserRepositories;
 
-namespace back_end.Services;
+namespace back_end.Services.UserServices;
 
 public class UserService : IUserService
 {
@@ -23,14 +23,21 @@ public class UserService : IUserService
         // Verifica se o usuário é maior de idade
         if (!IsAdult(createUserDto.Birthday))
         {
-            throw new Exception("Usuário deve ser maior de 18 anos");
+            throw new ArgumentException("Usuário deve ser maior de 18 anos", nameof(createUserDto));
         }
 
         // Mapeia o CreateUserDto para User
         var user = _mapper.Map<User>(createUserDto);
 
-        // Chama o repositório que salva o usuário no banco de dados
-        await _userRepository.CreateUserAsync(user);
+        try
+        {
+            // Chama o repositório que salva o usuário no banco de dados
+            await _userRepository.CreateUserAsync(user);
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("Erro ao criar usuário.", e);
+        }
 
         // Retorna o UserDto mapeado de user
         return _mapper.Map<UserDto>(user);

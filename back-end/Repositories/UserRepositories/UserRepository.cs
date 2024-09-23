@@ -2,7 +2,7 @@
 using back_end.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace back_end.Repositories;
+namespace back_end.Repositories.UserRepositories;
 
 public class UserRepository : IUserRepository
 {
@@ -13,10 +13,19 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task CreateUserAsync(User user)
+    public async Task<User> CreateUserAsync(User user)
     {
-        _context.Users.Add(user);
+        // Gera o id tipo GUID e as datas de criação e atualização em (UTC)
+        user.Id = Guid.NewGuid();
+        user.CreatedAt = DateTime.UtcNow;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        // Adiciona o usuário no banco
+        await _context.Users.AddAsync(user);
+        // Salva as alterações no banco
         await _context.SaveChangesAsync();
+        // Retorna o usuário criado, com id e datas préviamente preenchidas
+        return user;
     }
 
     public async Task<List<User>> GetUsersByCreatedAtAsync()

@@ -1,10 +1,10 @@
 ﻿using back_end.Models;
 
-namespace back_end.Repositories;
+namespace back_end.Repositories.UserRepositories;
 
 public interface IUserRepository
 {
-    Task CreateUserAsync(User user);
+    Task<User> CreateUserAsync(User user);
     Task<List<User>> GetUsersByCreatedAtAsync();
     Task<User?> GetUserByIdAsync(Guid id);
     Task<User?> DeleteUserByIdAsync(Guid id);

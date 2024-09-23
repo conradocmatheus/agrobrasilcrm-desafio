@@ -1,5 +1,5 @@
-using back_end.DTOs;
-using back_end.Services;
+using back_end.DTOs.UserDTOs;
+using back_end.Services.UserServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Controllers;
@@ -8,37 +8,39 @@ namespace back_end.Controllers;
 // Melhorar os catchs, retorno errado
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : ControllerBase
+public class UserController(IUserService userService) : ControllerBase
 {
-    private readonly IUserService _userService;
-
-    // Injeção de dependência userService
-    public UserController(IUserService userService)
-    {
-        _userService = userService;
-    }
-
     // POST User
     // POST: /api/user
     [HttpPost]
     [Route("post")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
     {
-        // Primeiramente verifica se o modelo enviado na requisição json é valido
+        // Verifica se o modelo enviado na requisição JSON é valido
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        // Depois chama o método do UserService e retorna 200 se der certo
+        
+        // Bloco try-catch para tentar chamar o método do userService
         try
         {
-            var userDto = await _userService.CreateUserAsync(createUserDto);
-            return Ok(userDto);
+            // Chama o método do UserService pra criar o usuário
+            var userDto = await userService.CreateUserAsync(createUserDto);
+            // Retorna 201 se der certo
+            return CreatedAtAction(nameof(GetUserById), new { id = userDto.Id }, userDto);
         }
-        // Se não, lança uma exceção genérica
-        catch(Exception e)
+        catch (ArgumentException e) // Para argumentos inválidos
         {
             return BadRequest(e.Message);
+        }
+        catch (InvalidOperationException e) // Para operações inválidas
+        {
+            return BadRequest(e.Message);
+        }
+        catch (Exception e) // Para erros genéricos
+        {
+            return StatusCode(500, "Erro interno do servidor.");
         }
     }
     
@@ -51,7 +53,7 @@ public class UserController : ControllerBase
         try
         {
             // Atribui o usuário criado pra userCreatedDto
-            var userCreatedAtDto = await _userService.GetUsersByCreatedAtAsync();
+            var userCreatedAtDto = await userService.GetUsersByCreatedAtAsync();
             return Ok(userCreatedAtDto);
         }
         catch (Exception e)
@@ -69,7 +71,7 @@ public class UserController : ControllerBase
         try
         {
             // Atribui o usuário encontrado pra selectedUser
-            var selectedUser = await _userService.GetUserByIdAsync(id);
+            var selectedUser = await userService.GetUserByIdAsync(id);
             return Ok(selectedUser);
         }
         catch (Exception e)
@@ -87,7 +89,7 @@ public class UserController : ControllerBase
         try
         {
             // Atribui o usuário deletado pra deletedUser
-            var deletedUser = await _userService.DeleteUserByIdAsync(id);
+            var deletedUser = await userService.DeleteUserByIdAsync(id);
             return Ok(deletedUser);
         }
         catch (Exception e)
@@ -111,7 +113,7 @@ public class UserController : ControllerBase
         // Tenta atualizar o usuário chamando o método do service
         try
         {
-            var userDto = await _userService.UpdateUserAsync(createUserDto, id);
+            var userDto = await userService.UpdateUserAsync(createUserDto, id);
             return Ok(userDto);
         }
         // Se não conseguir, lança uma exception
