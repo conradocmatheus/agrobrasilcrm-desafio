@@ -3,8 +3,9 @@ using back_end.DTOs;
 using back_end.DTOs.UserDTOs;
 using back_end.Models;
 using back_end.Repositories;
+using back_end.Repositories.ProductRepositories;
 
-namespace back_end.Services;
+namespace back_end.Services.ProductServices;
 
 public class ProductService : IProductService
 {

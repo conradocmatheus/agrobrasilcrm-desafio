@@ -2,7 +2,7 @@
 using back_end.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace back_end.Repositories;
+namespace back_end.Repositories.ProductRepositories;
 
 public class ProductRepository : IProductRepository
 {
@@ -13,50 +13,79 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
     
-    public async Task CreateProductAsync(Product product)
+    // Criar produto no banco
+    public async Task<Product> CreateProductAsync(Product product)
     {
+        // Gera o ID tipo GUID
+        product.Id = Guid.NewGuid();
+        
+        // Adiciona e salva o produto no banco
         _context.Products.Add(product);
         await _context.SaveChangesAsync();
+        
+        // Retorna o produto
+        return product;
     }
     
+    // Atualizar produto no banco
     public async Task<Product?> UpdateProductAsync(Product product, Guid id)
     {
-        var toUpdateProduct = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
-
-        if (toUpdateProduct == null)
+        try
         {
-            return null;
+            var toUpdateProduct = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (toUpdateProduct == null)
+            {
+                return null; // Retorno null se não encontrar o produto com o id
+            }
+
+            // Atualiza as propriedades
+            toUpdateProduct.Name = product.Name;
+            toUpdateProduct.Price = product.Price;
+            toUpdateProduct.Quantity = product.Quantity;
+
+            await _context.SaveChangesAsync();
+            return toUpdateProduct; // Retorna o produto atualizado
         }
-
-        toUpdateProduct.Name = product.Name;
-        toUpdateProduct.Price = product.Price;
-        toUpdateProduct.Quantity = product.Quantity;
-
-        await _context.SaveChangesAsync();
-        return null;
+        catch (DbUpdateException e)
+        {
+            throw new InvalidOperationException("Produto não foi encontrado.", e);
+        }
     }
     
+    // Deleta produto por ID
     public async Task<Product?> DeleteProductByIdAsync(Guid id)
     {
-        var existingProduct = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
-
-        if (existingProduct == null)
+        try
         {
-            return null;
-        }
+            var existingProduct = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
 
-        _context.Products.Remove(existingProduct);
-        await _context.SaveChangesAsync();
-        return existingProduct;
+            if (existingProduct == null)
+            {
+                return null;
+            }
+
+            // Remove o produto do banco, salva e retorna o próprio produto removido
+            _context.Products.Remove(existingProduct);
+            await _context.SaveChangesAsync();
+            return existingProduct;
+        }
+        catch (DbUpdateException e)
+        {
+            throw new InvalidOperationException("Não foi possível deletar produto", e);
+        }
     }
 
+    // Lista todos os produtos
     public async Task<List<Product>> GetAllProductsAsync()
     {
-        return await _context.Products.ToListAsync();
+        return await _context.Products.AsNoTracking().ToListAsync();
+
     }
 
+    // Encontra um produto por ID
     public async Task<Product?> GetProductByIdAsync(Guid id)
     {
-        return await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+        return await _context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 }

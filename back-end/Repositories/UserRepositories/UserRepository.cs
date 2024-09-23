@@ -50,7 +50,7 @@ public class UserRepository : IUserRepository
             await _context.SaveChangesAsync();
             return toUpdateUser; // Retorna o usuário atualizado
         }
-        catch (Exception e)
+        catch (DbUpdateException e)
         {
             throw new InvalidOperationException($"Não foi possível atualizar," +
                                                 $" usuário com ID {id} não encontrado.", e);
@@ -75,7 +75,7 @@ public class UserRepository : IUserRepository
             await _context.SaveChangesAsync();
             return existingUser;
         }
-        catch (Exception e)
+        catch (DbUpdateException e)
         {
             throw new InvalidOperationException("Não foi possível deletar o usuário.", e);
         }
