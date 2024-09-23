@@ -1,4 +1,4 @@
-﻿namespace back_end.DTOs;
+﻿namespace back_end.DTOs.ProductDTOs;
 
 public class ProductDto
 {

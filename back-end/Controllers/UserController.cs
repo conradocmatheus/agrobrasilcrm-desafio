@@ -110,7 +110,7 @@ public class UserController(IUserService userService) : ControllerBase
     {
         try
         {
-            // Atribui o usuário criado pra userCreatedDto
+            // Atribui a lista de usuarios pra userCreatedAtDto
             var userCreatedAtDto = await userService.GetUsersByCreatedAtAsync();
             // Verifica se tem algum usuário na lista
             if (userCreatedAtDto.Count == 0)
@@ -121,7 +121,7 @@ public class UserController(IUserService userService) : ControllerBase
         }
         catch (Exception e)
         {
-            return StatusCode(500, "Erro interno no servidor.");
+            return StatusCode(500, e.Message);
         }
     }
     
