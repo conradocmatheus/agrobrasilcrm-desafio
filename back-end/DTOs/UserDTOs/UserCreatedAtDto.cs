@@ -1,11 +1,10 @@
-﻿namespace back_end.Models;
+﻿namespace back_end.DTOs.UserDTOs;
 
-public class User
+public class UserCreatedAtDto
 {
     public Guid Id { get; set; }
     public required string Name { get; set; }
     public required string Email { get; set; }
     public DateTime Birthday { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }
