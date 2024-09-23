@@ -10,8 +10,8 @@ namespace back_end.Controllers;
 [Route("api/[controller]")]
 public class UserController(IUserService userService) : ControllerBase
 {
-    // POST User
-    // POST: /api/user
+    // POST - User
+    // POST - /api/user
     [HttpPost]
     [Route("post")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
@@ -44,8 +44,8 @@ public class UserController(IUserService userService) : ControllerBase
         }
     }
     
-    // GET Users
-    // GET: /api/user/by-creation-date
+    // GET - Users
+    // GET - /api/user/by-creation-date
     [HttpGet]
     [Route("get/by-creation-date")]
     public async Task<IActionResult> GetUsersByCreatedAt()
@@ -67,8 +67,8 @@ public class UserController(IUserService userService) : ControllerBase
         }
     }
     
-    // GET User by id
-    // GET: /api/user/by-id
+    // GET - User by id
+    // GET - /api/user/by-id
     [HttpGet]
     [Route("get/by-id/{id:Guid}")]
     public async Task<IActionResult> GetUserById([FromRoute] Guid id)
@@ -90,8 +90,8 @@ public class UserController(IUserService userService) : ControllerBase
         }
     }
     
-    // Delete User by id
-    // Delete: /api/user/by-id
+    // Delete - User by id
+    // Delete - /api/user/by-id
     [HttpDelete]
     [Route("delete/by-id/{id:Guid}")]
     public async Task<IActionResult> DeleteUserById([FromRoute] Guid id)
@@ -117,8 +117,8 @@ public class UserController(IUserService userService) : ControllerBase
     //========================
     // AINDA ESTA SENDO POSSIVEL ATUALIZAR E COLOCAR IDADE MENOR DE 18
     //========================
-    // Update User by id
-    // Update: /api/user/by-id
+    // Update - User by id
+    // Update - /api/user/by-id
     [HttpPut]
     [Route("update/by-id/{id:Guid}")]
     public async Task<IActionResult> UpdateUserById([FromBody] CreateUserDto createUserDto, [FromRoute] Guid id)
