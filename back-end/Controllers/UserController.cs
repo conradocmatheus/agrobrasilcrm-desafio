@@ -40,7 +40,65 @@ public class UserController(IUserService userService) : ControllerBase
         }
         catch (Exception e) // Para erros genéricos
         {
-            return StatusCode(500, "Erro interno do servidor.");
+            return StatusCode(500, e.Message);
+        }
+    }
+    
+    //========================
+    // AINDA ESTA SENDO POSSIVEL ATUALIZAR E COLOCAR IDADE MENOR DE 18
+    //========================
+    // Update - User by id
+    // Update - /api/user/by-id
+    [HttpPut]
+    [Route("update/by-id/{id:Guid}")]
+    public async Task<IActionResult> UpdateUserById([FromBody] CreateUserDto createUserDto, [FromRoute] Guid id)
+    {
+        // Verifica o corpo da requisição, se esta tudo nos conformes...
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
+        // Tenta atualizar o usuário chamando o método do service
+        try
+        {
+            var userDto = await userService.UpdateUserAsync(createUserDto, id);
+
+            if (userDto == null)
+            {
+                return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
+            }
+
+            return Ok(userDto);
+        }
+        // Se não conseguir, lança uma exception
+        catch (Exception e)
+        {
+            return BadRequest("Erro ao atualizar usuário: " + e.Message);
+        }
+    }
+    
+    // Delete - User by id
+    // Delete - /api/user/by-id
+    [HttpDelete]
+    [Route("delete/by-id/{id:Guid}")]
+    public async Task<IActionResult> DeleteUserById([FromRoute] Guid id)
+    {
+        try
+        {
+            // Atribui o usuário deletado pra deletedUser
+            var deletedUser = await userService.DeleteUserByIdAsync(id);
+
+            if (deletedUser == null)
+            {
+                return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
+            }
+
+            return Ok(deletedUser);
+        }
+        catch (Exception e)
+        {
+            return BadRequest("Erro ao deletar usuário: " + e.Message);
         }
     }
     
@@ -87,64 +145,6 @@ public class UserController(IUserService userService) : ControllerBase
         catch (Exception e)
         {
             return StatusCode(500, "Erro interno no servidor.");
-        }
-    }
-    
-    // Delete - User by id
-    // Delete - /api/user/by-id
-    [HttpDelete]
-    [Route("delete/by-id/{id:Guid}")]
-    public async Task<IActionResult> DeleteUserById([FromRoute] Guid id)
-    {
-        try
-        {
-            // Atribui o usuário deletado pra deletedUser
-            var deletedUser = await userService.DeleteUserByIdAsync(id);
-
-            if (deletedUser == null)
-            {
-                return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
-            }
-
-            return Ok(deletedUser);
-        }
-        catch (Exception e)
-        {
-            return BadRequest("Erro ao deletar usuário: " + e.Message);
-        }
-    }
-    
-    //========================
-    // AINDA ESTA SENDO POSSIVEL ATUALIZAR E COLOCAR IDADE MENOR DE 18
-    //========================
-    // Update - User by id
-    // Update - /api/user/by-id
-    [HttpPut]
-    [Route("update/by-id/{id:Guid}")]
-    public async Task<IActionResult> UpdateUserById([FromBody] CreateUserDto createUserDto, [FromRoute] Guid id)
-    {
-        // Verifica o corpo da requisição, se esta tudo nos conformes...
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        
-        // Tenta atualizar o usuário chamando o método do service
-        try
-        {
-            var userDto = await userService.UpdateUserAsync(createUserDto, id);
-
-            if (userDto == null)
-            {
-                return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
-            }
-
-            return Ok(userDto);
-        }
-        // Se não conseguir, lança uma exception
-        catch (Exception e)
-        {
-            return BadRequest("Erro ao atualizar usuário: " + e.Message);
         }
     }
 }
