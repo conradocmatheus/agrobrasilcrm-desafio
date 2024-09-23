@@ -41,22 +41,6 @@ public class UserService : IUserService
         
         // Retorna o UserDto mapeado de user
         return _mapper.Map<UserDto>(user);
-
-    }
-    
-    public async Task<UserDto?> DeleteUserByIdAsync(Guid id)
-    {
-        try
-        {
-            // Atribui o usuário deletado por id a uma variável(deletedUser)
-            var deletedUser = await _userRepository.DeleteUserByIdAsync(id);
-            // Retorna o usuário deletado ou null, no formato de UserDto
-            return deletedUser == null ? null : _mapper.Map<UserDto>(deletedUser);
-        }
-        catch (Exception e)
-        {
-            throw new InvalidOperationException("Erro ao deletar usuário", e);
-        }
     }
 
     public async Task<UserDto?> UpdateUserAsync(CreateUserDto createUserDto, Guid id)
@@ -75,6 +59,21 @@ public class UserService : IUserService
         catch (Exception e)
         {
             throw new InvalidOperationException("Erro ao atualizar usuário.", e);
+        }
+    }
+    
+    public async Task<UserDto?> DeleteUserByIdAsync(Guid id)
+    {
+        try
+        {
+            // Atribui o usuário deletado por id a uma variável(deletedUser)
+            var deletedUser = await _userRepository.DeleteUserByIdAsync(id);
+            // Retorna o usuário deletado ou null, no formato de UserDto
+            return deletedUser == null ? null : _mapper.Map<UserDto>(deletedUser);
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("Erro ao deletar usuário", e);
         }
     }
     
