@@ -5,19 +5,11 @@ using back_end.Repositories.UserRepositories;
 
 namespace back_end.Services.UserServices;
 
-public class UserService : IUserService
+public class UserService(IMapper mapper, IUserRepository userRepository) : IUserService
 {
-    private readonly IMapper _mapper;
-    private readonly IUserRepository _userRepository;
-    
     private const int AgeOfMajority = 18;
 
-    public UserService(IMapper mapper, IUserRepository userRepository)
-    {
-        _mapper = mapper;
-        _userRepository = userRepository;
-    }
-    
+    // Criar usuário
     public async Task<UserDto> CreateUserAsync(CreateUserDto createUserDto)
     {
         // Verifica se o usuário é maior de idade
@@ -27,12 +19,12 @@ public class UserService : IUserService
         }
 
         // Mapeia o CreateUserDto para User
-        var user = _mapper.Map<User>(createUserDto);
+        var user = mapper.Map<User>(createUserDto);
 
         try
         {
             // Chama o repositório que salva o usuário no banco de dados
-            await _userRepository.CreateUserAsync(user);
+            await userRepository.CreateUserAsync(user);
         }
         catch (Exception e)
         {
@@ -40,21 +32,22 @@ public class UserService : IUserService
         }
         
         // Retorna o UserDto mapeado de user
-        return _mapper.Map<UserDto>(user);
+        return mapper.Map<UserDto>(user);
     }
 
+    // Atualizar usuário por ID
     public async Task<UserDto?> UpdateUserAsync(CreateUserDto createUserDto, Guid id)
     {
         try
         {
             // Mapeia de createUserDto pra User
-            var toUpdateUser = _mapper.Map<User>(createUserDto);
+            var toUpdateUser = mapper.Map<User>(createUserDto);
         
             // Atualiza toUpdateUser com o id fornecido
-            var updatedUser = await _userRepository.UpdateUserAsync(toUpdateUser, id);
+            var updatedUser = await userRepository.UpdateUserAsync(toUpdateUser, id);
         
             // Verifica se o usuário foi atualizado e retorna
-            return updatedUser == null ? null : _mapper.Map<UserDto>(updatedUser);
+            return updatedUser == null ? null : mapper.Map<UserDto>(updatedUser);
         }
         catch (Exception e)
         {
@@ -62,14 +55,15 @@ public class UserService : IUserService
         }
     }
     
+    // Deletar usuário por ID
     public async Task<UserDto?> DeleteUserByIdAsync(Guid id)
     {
         try
         {
             // Atribui o usuário deletado por id a uma variável(deletedUser)
-            var deletedUser = await _userRepository.DeleteUserByIdAsync(id);
+            var deletedUser = await userRepository.DeleteUserByIdAsync(id);
             // Retorna o usuário deletado ou null, no formato de UserDto
-            return deletedUser == null ? null : _mapper.Map<UserDto>(deletedUser);
+            return deletedUser == null ? null : mapper.Map<UserDto>(deletedUser);
         }
         catch (Exception e)
         {
@@ -78,14 +72,15 @@ public class UserService : IUserService
     }
     
     // Mudar retorno para UserDto dps, ou criar outra DTO
+    // Listar por data de criação
     public async Task<List<UserCreatedAtDto>> GetUsersByCreatedAtAsync()
     {
         try
         {
             // Atribui a lista que o método do repository retorna em uma var users
-            var users = await _userRepository.GetUsersByCreatedAtAsync();
+            var users = await userRepository.GetUsersByCreatedAtAsync();
             // E dps retorna a lista dos objetos user mapeados para Dto
-            return _mapper.Map<List<UserCreatedAtDto>>(users);
+            return mapper.Map<List<UserCreatedAtDto>>(users);
         }
         catch (Exception e)
         {
@@ -93,14 +88,15 @@ public class UserService : IUserService
         }
     }
 
+    // Encontrar usuário por ID
     public async Task<UserDto?> GetUserByIdAsync(Guid id)
     {
         try
         {
             // Atribui o usuário encontrado por id a uma variável(foundUser)
-            var foundUser = await _userRepository.GetUserByIdAsync(id);
+            var foundUser = await userRepository.GetUserByIdAsync(id);
             // Retorna o usuário encontrado ou null, no formato de UserDto
-            return foundUser == null ? null : _mapper.Map<UserDto>(foundUser);
+            return foundUser == null ? null : mapper.Map<UserDto>(foundUser);
         }
         catch (Exception e)
         {
