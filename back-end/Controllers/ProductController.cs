@@ -16,8 +16,8 @@ public class ProductController : ControllerBase
         _productService = productService;
     }
 
-    // POST Product
-    // POST: /api/product/post
+    // POST - Product
+    // POST - /api/product/post
     [HttpPost]
     [Route("post")]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
@@ -38,8 +38,8 @@ public class ProductController : ControllerBase
         }
     }
 
-    // PUT Product by id
-    // PUT: /api/product/update/{id}
+    // PUT - Product by id
+    // PUT - /api/product/update/{id}
     [HttpPut]
     [Route("update/{id:Guid}")]
     public async Task<IActionResult> UpdateProductById([FromBody] UpdateProductDto updateProductDto,
@@ -61,8 +61,8 @@ public class ProductController : ControllerBase
         }
     }
 
-    // DELETE Product by id
-    // DELETE: /api/product/delete/{id}
+    // DELETE - Product by id
+    // DELETE - /api/product/delete/{id}
     [HttpDelete]
     [Route("delete/{id:Guid}")]
     public async Task<IActionResult> DeleteProductById([FromRoute] Guid id)
@@ -78,8 +78,8 @@ public class ProductController : ControllerBase
         }
     }
 
-    // GET Products
-    // GET: /api/product/get-all
+    // GET - Products
+    // GET - /api/product/get-all
     [HttpGet]
     [Route("get-all")]
     public async Task<IActionResult> GetAllProducts()
@@ -94,9 +94,9 @@ public class ProductController : ControllerBase
             return BadRequest(e.Message);
         }
     }
-    
-    // GET Products by id
-    // GET: /api/product/{id}
+
+    // GET - Products by id
+    // GET - /api/product/{id}
     [HttpGet]
     [Route("{id:Guid}")]
     public async Task<IActionResult> GetProductById(Guid id)
