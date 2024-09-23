@@ -100,14 +100,23 @@ public class UserController(IUserService userService) : ControllerBase
         {
             // Atribui o usuário deletado pra deletedUser
             var deletedUser = await userService.DeleteUserByIdAsync(id);
+
+            if (deletedUser == null)
+            {
+                return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
+            }
+
             return Ok(deletedUser);
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            return BadRequest("Erro ao deletar usuário: " + e.Message);
         }
     }
     
+    //========================
+    // AINDA ESTA SENDO POSSIVEL ATUALIZAR E COLOCAR IDADE MENOR DE 18
+    //========================
     // Update User by id
     // Update: /api/user/by-id
     [HttpPut]
@@ -124,13 +133,18 @@ public class UserController(IUserService userService) : ControllerBase
         try
         {
             var userDto = await userService.UpdateUserAsync(createUserDto, id);
+
+            if (userDto == null)
+            {
+                return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
+            }
+
             return Ok(userDto);
         }
         // Se não conseguir, lança uma exception
         catch (Exception e)
         {
-            throw new Exception(e.Message);
+            return BadRequest("Erro ao atualizar usuário: " + e.Message);
         }
     }
-
 }

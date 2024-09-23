@@ -38,7 +38,7 @@ public class UserService : IUserService
         {
             throw new InvalidOperationException("Erro ao criar usuário.", e);
         }
-
+        
         // Retorna o UserDto mapeado de user
         return _mapper.Map<UserDto>(user);
 
@@ -73,27 +73,40 @@ public class UserService : IUserService
         {
             throw new InvalidOperationException("Erro ao obter usuário.", e);
         }
-        
     }
 
     public async Task<UserDto?> DeleteUserByIdAsync(Guid id)
     {
-        // Atribui o usuário deletado por id a uma variável(deletedUser)
-        var deletedUser = await _userRepository.DeleteUserByIdAsync(id);
-        // Retorna o usuário deletado ou null, no formato de UserDto
-        return deletedUser == null ? null : _mapper.Map<UserDto>(deletedUser);
+        try
+        {
+            // Atribui o usuário deletado por id a uma variável(deletedUser)
+            var deletedUser = await _userRepository.DeleteUserByIdAsync(id);
+            // Retorna o usuário deletado ou null, no formato de UserDto
+            return deletedUser == null ? null : _mapper.Map<UserDto>(deletedUser);
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("Erro ao deletar usuário", e);
+        }
     }
 
     public async Task<UserDto?> UpdateUserAsync(CreateUserDto createUserDto, Guid id)
     {
-        // Mapeia de createUserDto pra User
-        var toUpdateUser = _mapper.Map<User>(createUserDto);
+        try
+        {
+            // Mapeia de createUserDto pra User
+            var toUpdateUser = _mapper.Map<User>(createUserDto);
         
-        // Atualiza toUpdateUser com o id fornecido
-        await _userRepository.UpdateUserAsync(toUpdateUser, id);
+            // Atualiza toUpdateUser com o id fornecido
+            var updatedUser = await _userRepository.UpdateUserAsync(toUpdateUser, id);
         
-        // Mapeia novamente e retorna
-        return _mapper.Map<UserDto>(toUpdateUser);
+            // Verifica se o usuário foi atualizado e retorna
+            return updatedUser == null ? null : _mapper.Map<UserDto>(updatedUser);
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("Erro ao atualizar usuário.", e);
+        }
     }
 
     // Método que verifica se o usuário é um adulto

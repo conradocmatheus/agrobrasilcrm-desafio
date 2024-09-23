@@ -47,34 +47,51 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> DeleteUserByIdAsync(Guid id)
     {
-        // Pega o usuário com o id fornecido ou null se não encontrar
-        var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-
-        if (existingUser == null)
+        try
         {
-            return null;
-        }
+            // Pega o usuário com o id fornecido ou null se não encontrar
+            var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
 
-        // Remove o usuário do banco, salva e retorna o próprio
-        _context.Users.Remove(existingUser);
-        await _context.SaveChangesAsync();
-        return existingUser;
+            if (existingUser == null)
+            {
+                return null;
+            }
+
+            // Remove o usuário do banco, salva e retorna o próprio usuário removido
+            _context.Users.Remove(existingUser);
+            await _context.SaveChangesAsync();
+            return existingUser;
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("Não foi possível deletar o usuário.", e);
+        }
     }
 
     public async Task<User?> UpdateUserAsync(User user, Guid id)
     {
-        var toUpdateUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-        if (toUpdateUser == null)
+        try
         {
-            return null;
+            var toUpdateUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (toUpdateUser == null)
+            {
+                return null; // Retorna null se o usuário não for encontrado
+            }
+
+            // Atualiza as propriedades
+            toUpdateUser.Name = user.Name;
+            toUpdateUser.Email = user.Email;
+            toUpdateUser.Birthday = user.Birthday;
+            toUpdateUser.UpdatedAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+            return toUpdateUser; // Retorna o usuário atualizado
         }
-
-        toUpdateUser.Name = user.Name;
-        toUpdateUser.Email = user.Email;
-        toUpdateUser.Birthday = user.Birthday;
-        toUpdateUser.UpdatedAt = DateTime.Now;
-
-        await _context.SaveChangesAsync();
-        return toUpdateUser;
+        catch (Exception e)
+        {
+            throw new InvalidOperationException($"Não foi possível atualizar," +
+                                                $" usuário com ID {id} não encontrado.", e);
+        }
     }
 }
