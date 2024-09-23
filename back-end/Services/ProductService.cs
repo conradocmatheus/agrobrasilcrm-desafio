@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using back_end.DTOs;
+using back_end.DTOs.UserDTOs;
 using back_end.Models;
 using back_end.Repositories;
 

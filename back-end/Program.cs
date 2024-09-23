@@ -1,6 +1,8 @@
 using back_end.Data;
 using back_end.Repositories;
+using back_end.Repositories.UserRepositories;
 using back_end.Services;
+using back_end.Services.UserServices;
 using Microsoft.EntityFrameworkCore;
 
 namespace back_end;
