@@ -20,7 +20,8 @@ public class ProductService : IProductService
     {
         var product = _mapper.Map<Product>(createProductDto);
         await _productRepository.CreateProductAsync(product);
-        return createProductDto;
+        var productDto = _mapper.Map<CreateProductDto>(product);
+        return productDto;
     }
 
     public async Task<ProductDto?> UpdateProductAsync(UpdateProductDto updateProductDto, Guid id)
