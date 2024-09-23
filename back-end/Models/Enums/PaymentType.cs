@@ -3,6 +3,5 @@
 public enum PaymentType
 {
     Debit,
-    Credit,
-    Refund
+    Credit
 }
