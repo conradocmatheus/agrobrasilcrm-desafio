@@ -1,6 +1,6 @@
-﻿using back_end.DTOs;
+﻿using back_end.CustomActionFilters;
+using back_end.DTOs;
 using back_end.DTOs.UserDTOs;
-using back_end.Services;
 using back_end.Services.ProductServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,32 +13,27 @@ public class ProductController(IProductService productService) : ControllerBase
     // POST - Product
     // POST - /api/product/post
     [HttpPost]
+    [ValidadeModel]
     [Route("post")]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
     {
-        // Verifica se o modelo enviado na requisicao JSON e valido
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        // Bloco try-catch para tentar chamar o metodo do productService
+        // Bloco try-catch para tentar chamar o método do productService
         try
         {
-            // Chama o metodo do productService para criar o product
+            // Chama o método do productService para criar o product
             var productDto = await productService.CreateProductAsync(createProductDto);
             // Retorna 201 se der certo
             return CreatedAtAction(nameof(GetProductById), new { id = productDto.Id }, productDto);
         }
-        catch (ArgumentException e) // Para argumentos invalidos
+        catch (ArgumentException e) // Para argumentos inválidos
         {
             return BadRequest(e.Message);
         }
-        catch (InvalidOperationException e) // Para operacoes invalidas
+        catch (InvalidOperationException e) // Para operações invalidas
         {
             return BadRequest(e.Message);
         }
-        catch (Exception e) // Para erros genericos
+        catch (Exception e) // Para erros genéricos
         {
             return StatusCode(500, e.Message);
         }
@@ -47,29 +42,24 @@ public class ProductController(IProductService productService) : ControllerBase
     // PUT - Product by id
     // PUT - /api/product/update/{id}
     [HttpPut]
+    [ValidadeModel]
     [Route("update/{id:Guid}")]
     public async Task<IActionResult> UpdateProductById([FromBody] UpdateProductDto updateProductDto,
         [FromRoute] Guid id)
     {
-        // Verifica o corpo da requisicao, se esta nos conformes...
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        // Tenta atualizar o produto chamando o metodo do service
+        // Tenta atualizar o produto chamando o método do service
         try
         {
             var productDto = await productService.UpdateProductAsync(updateProductDto, id);
 
             if (productDto == null)
             {
-                return NotFound($"Produto com  ID {id} nao encontrado"); // Retorna notFound se nao encontrado
+                return NotFound($"Produto com  ID {id} nao encontrado"); // Retorna notFound se não encontrado
             }
             
             return Ok(productDto);
         }
-        // Se nao conseguir, lanca uma exception
+        // Se não conseguir, lança uma exception
         catch (Exception e)
         {
             return BadRequest("Erro ao atualizar produto: " + e.Message);
@@ -89,7 +79,7 @@ public class ProductController(IProductService productService) : ControllerBase
 
             if (deletedProduct == null)
             {
-                return NotFound($"Produto com ID {id} nao encontrado."); // Retorna notFound se nao encontrado
+                return NotFound($"Produto com ID {id} nao encontrado."); // Retorna notFound se não encontrado
             }
             
             return Ok(deletedProduct);
