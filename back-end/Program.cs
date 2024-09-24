@@ -1,6 +1,8 @@
 using back_end.Data;
+using back_end.Repositories.MovementRepositories;
 using back_end.Repositories.ProductRepositories;
 using back_end.Repositories.UserRepositories;
+using back_end.Services.MovementServices;
 using back_end.Services.ProductServices;
 using back_end.Services.UserServices;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +16,11 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+            });
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -30,10 +36,12 @@ public class Program
         // Registro dos Repositories
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
+        builder.Services.AddScoped<IMovementRepository, MovementRepository>();
         
         // Registro dos Services
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IProductService, ProductService>();
+        builder.Services.AddScoped<IMovementService, MovementService>();
         
         var app = builder.Build();
 
