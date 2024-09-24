@@ -7,7 +7,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
 {
     // Define os DbSets para as classes
     public DbSet<User> Users { get; set; }
-    public DbSet<Movement> Transactions { get; set; }
+    public DbSet<Movement> Movements { get; set; }
     public DbSet<Product> Products { get; set; }
     
     // Tabela intermediaria no relacionamento n-n entre movement e products
