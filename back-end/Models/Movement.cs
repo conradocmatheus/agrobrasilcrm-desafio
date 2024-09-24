@@ -2,7 +2,7 @@
 
 namespace back_end.Models;
 
-public class Transaction
+public class Movement
 {
 
     // Propriedades da classe Transaction
