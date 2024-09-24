@@ -7,4 +7,7 @@ public class Product
     public string Name { get; set; }
     public int Quantity { get; set; }
     public double Price { get; set; }
+    
+    // Muitos produtos para muitos movimentos
+    public ICollection<MovementProduct> MovementProducts { get; set; } = new List<MovementProduct>();
 }
