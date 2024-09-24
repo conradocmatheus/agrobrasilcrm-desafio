@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace back_end.Filters;
+namespace back_end.CustomActionFilters;
 
-public class ValidadeModelStateAtribute : ActionFilterAttribute
+public class ValidadeModelAttribute : ActionFilterAttribute
 {
     // Método para validação do ModelState
     public override void OnActionExecuting(ActionExecutingContext context)
