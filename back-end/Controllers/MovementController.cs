@@ -10,6 +10,8 @@ namespace back_end.Controllers;
 [Route("api/[controller]")]
 public class MovementController(IMovementService movementService) : ControllerBase
 {
+    // POST - Movement
+    // POST - /api/movement/post
     [HttpPost]
     [Route("post")]
     public async Task<IActionResult> CreateMovement([FromBody] CreateMovementDto createMovementDto)
@@ -27,17 +29,46 @@ public class MovementController(IMovementService movementService) : ControllerBa
         }
     }
 
+    // GET - Movements
+    // GET - /api/movement/get-all
     [HttpGet]
     [Route("get-all")]
     public async Task<IActionResult> GetAllMovements([FromQuery] QueryObject query)
     {
-        return Ok(await movementService.GetAllMovementsAsync(query));
+        try
+        {
+            var movements = await movementService.GetAllMovementsAsync(query);
+            if (movements.Count == 0)
+            {
+                return NotFound("Nenhum movimento encontrado.");
+            }
+            return Ok(movements);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+        
     }
 
+    // GET - Movements
+    // GET - /api/movement/get-all/by-payment-type/{paymentType}
     [HttpGet]
     [Route("get-all/by-payment-type/{paymentType}")]
     public async Task<IActionResult> GetAllMovementsByPaymentType([FromRoute] PaymentType paymentType)
     {
-        return Ok(await movementService.GetAllMovementsByPaymentTypeAsync(paymentType));
+        try
+        {
+            var movements = await movementService.GetAllMovementsByPaymentTypeAsync(paymentType);
+            if (movements.Count == 0)
+            {
+                return NotFound("Nenhum movimento encontrado.");
+            }
+            return Ok(movements);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
     }
 }
