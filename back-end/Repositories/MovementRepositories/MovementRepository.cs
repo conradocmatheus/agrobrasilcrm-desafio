@@ -11,11 +11,14 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
     // Criar uma movimentação
     public async Task<Movement> CreateMovementAsync(Movement movement)
     {
+        // Cria um id do tipo GUID pra movimentação
         movement.Id = Guid.NewGuid();
 
+        // Adiciona a movimentação no banco
         await context.Movements.AddAsync(movement);
+        // Salva as alterações
         await context.SaveChangesAsync();
-
+        // Retorna a movimentação criada
         return movement;
     }
 
