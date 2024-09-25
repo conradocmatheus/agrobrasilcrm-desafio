@@ -89,7 +89,7 @@ public class UserController(IUserService userService) : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest("Erro ao deletar usuário: " + e.Message);
+            return BadRequest(e.Message);
         }
     }
     

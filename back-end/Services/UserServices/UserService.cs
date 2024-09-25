@@ -63,18 +63,18 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
         {
             // Atribui o usuário encontrado por id na variável user
             var user = await userRepository.GetUserByIdAsync(id);
-            
+
             if (user == null)
             {
                 throw new InvalidOperationException("Usuário não encontrado.");
             }
 
             // ISSO NÃO ESTA FUNCIONANDO
-            if (user.Movements.Count > 0)
+            if (user.Movements == null || user.Movements.Count > 0)
             {
-                throw new InvalidOperationException("Usuário não pode ser deletado motivo: Possui movimentações.");
+                throw new InvalidOperationException("Usuário não pode ser deletado porque possui movimentações.");
             }
-            
+
             // Atribui o usuário que passou pelas verificações uma variável(deletedUser)
             var deletedUser = await userRepository.DeleteUserByIdAsync(id);
             // Retorna o usuário deletado ou null, no formato de UserDto
@@ -82,7 +82,7 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
         }
         catch (Exception e)
         {
-            throw new InvalidOperationException("Erro ao deletar usuário", e);
+            throw new Exception(e.Message);
         }
     }
 
