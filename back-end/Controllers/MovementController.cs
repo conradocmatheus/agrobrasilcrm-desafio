@@ -1,4 +1,5 @@
 ﻿using back_end.DTOs.MovementDTOs;
+using back_end.Models.Enums;
 using back_end.Services.MovementServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,5 +31,12 @@ public class MovementController(IMovementService movementService) : ControllerBa
     public async Task<IActionResult> GetAllMovements()
     {
         return Ok(await movementService.GetAllMovementsAsync());
+    }
+
+    [HttpGet]
+    [Route("get-all/by-payment-type/{paymentType}")]
+    public async Task<IActionResult> GetAllMovementsByPaymentType([FromRoute] PaymentType paymentType)
+    {
+        return Ok(await movementService.GetAllMovementsByPaymentTypeAsync(paymentType));
     }
 }

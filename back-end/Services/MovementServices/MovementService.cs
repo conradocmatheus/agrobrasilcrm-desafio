@@ -38,6 +38,10 @@ public class MovementService(IMapper mapper, IMovementRepository movementReposit
         {
             throw new InvalidOperationException("Erro ao obter lista de movimentações.", e);
         }
+    }   
+    public async Task<List<GetAllMovementsDto>> GetAllMovementsByPaymentTypeAsync(PaymentType paymentType)
+    {
+        var movements = await movementRepository.GetAllMovementsByPaymentTypeAsync(paymentType);
+        return mapper.Map<List<GetAllMovementsDto>>(movements);
     }
-    
 }

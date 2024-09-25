@@ -8,4 +8,5 @@ public interface IMovementService
 {
     Task<MovementDto> CreateMovementAsync(CreateMovementDto createMovementDto);
     Task<List<GetAllMovementsDto>> GetAllMovementsAsync();
+    Task<List<GetAllMovementsDto>> GetAllMovementsByPaymentTypeAsync(PaymentType paymentType);
 }
