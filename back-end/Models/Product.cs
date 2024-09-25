@@ -9,5 +9,5 @@ public class Product
     public double Price { get; set; }
     
     // Muitos produtos para muitos movimentos
-    public ICollection<MovementProduct> MovementProducts { get; set; } = new List<MovementProduct>();
+    public IList<MovementProduct> MovementProducts { get; set; } = new List<MovementProduct>();
 }

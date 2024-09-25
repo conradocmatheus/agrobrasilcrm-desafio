@@ -11,5 +11,5 @@ public class User
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
     
     // Um para muitos, um usuário pode ter várias movimentações
-    public ICollection<Movement> Movements { get; set; } = new List<Movement>();
+    public IList<Movement> Movements { get; set; } = new List<Movement>();
 }

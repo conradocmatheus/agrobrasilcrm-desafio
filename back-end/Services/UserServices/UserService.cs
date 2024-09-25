@@ -30,7 +30,7 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
         {
             throw new InvalidOperationException("Erro ao criar usuário.", e);
         }
-        
+
         // Retorna o UserDto mapeado de user
         return mapper.Map<UserDto>(user);
     }
@@ -42,10 +42,10 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
         {
             // Mapeia de createUserDto pra User
             var toUpdateUser = mapper.Map<User>(createUserDto);
-        
+
             // Atualiza toUpdateUser com o id fornecido
             var updatedUser = await userRepository.UpdateUserAsync(toUpdateUser, id);
-        
+
             // Verifica se o usuário foi atualizado e retorna
             return updatedUser == null ? null : mapper.Map<UserDto>(updatedUser);
         }
@@ -60,17 +60,30 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
     {
         try
         {
-            // Atribui o usuário deletado por id a uma variável(deletedUser)
+            // Atribui o usuário encontrado por id na variável user
+            var user = await userRepository.GetUserByIdAsync(id);
+
+            if (user == null)
+            {
+                throw new InvalidOperationException("Usuário não encontrado.");
+            }
+            
+            if (user.Movements == null || user.Movements.Count > 0)
+            {
+                throw new InvalidOperationException("Usuário não pode ser deletado porque possui movimentações.");
+            }
+
+            // Atribui o usuário que passou pelas verificações uma variável(deletedUser)
             var deletedUser = await userRepository.DeleteUserByIdAsync(id);
             // Retorna o usuário deletado ou null, no formato de UserDto
-            return deletedUser == null ? null : mapper.Map<UserDto>(deletedUser);
+            return mapper.Map<UserDto>(deletedUser);
         }
         catch (Exception e)
         {
-            throw new InvalidOperationException("Erro ao deletar usuário", e);
+            throw new Exception(e.Message);
         }
     }
-    
+
     // Mudar retorno para UserDto dps, ou criar outra DTO
     // Listar por data de criação
     public async Task<List<UserCreatedAtDto>> GetUsersByCreatedAtAsync()
