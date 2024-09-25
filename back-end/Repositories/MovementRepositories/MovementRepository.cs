@@ -8,6 +8,7 @@ namespace back_end.Repositories.MovementRepositories;
 
 public class MovementRepository(AppDbContext context) : IMovementRepository
 {
+    // Criar uma movimentação
     public async Task<Movement> CreateMovementAsync(Movement movement)
     {
         movement.Id = Guid.NewGuid();
@@ -18,6 +19,7 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
         return movement;
     }
 
+    // Listar movimentações paginadas e mostrando info do user
     public async Task<List<Movement>> GetAllMovementsAsync(QueryObject query)
     {
         var skipNumber = (query.PageNumber - 1) * query.PageSize;
@@ -31,6 +33,7 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
             .ToListAsync();
     }
 
+    // Listar todas no débito ou no crédito
     public async Task<List<Movement>> GetAllMovementsByPaymentTypeAsync(PaymentType paymentType)
     {
         return await context.Movements
