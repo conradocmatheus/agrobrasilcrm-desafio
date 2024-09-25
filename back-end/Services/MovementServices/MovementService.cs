@@ -9,6 +9,7 @@ namespace back_end.Services.MovementServices;
 
 public class MovementService(IMapper mapper, IMovementRepository movementRepository) : IMovementService
 {
+    // Criar movimentação
     public async Task<MovementDto> CreateMovementAsync(CreateMovementDto createMovementDto)
     {
         // Mapeia createMovementDto para Movement e atribui para movement
@@ -21,28 +22,40 @@ public class MovementService(IMapper mapper, IMovementRepository movementReposit
             Quantity = p.Quantity
         }).ToList();
 
-        // Chama o metodo createMovementAsync
+        // Chama o método createMovementAsync
         await movementRepository.CreateMovementAsync(movement);
 
         // Mapeia movement pra MovementDto
         return mapper.Map<MovementDto>(movement);
     }
 
+    // Listar movimentações
     public async Task<List<GetAllMovementsWithUserInfoDto>> GetAllMovementsAsync(QueryObject query)
     {
         try
         {
+            // Atribui a lista que o método do repository retorna em uma var movements
             var movements = await movementRepository.GetAllMovementsAsync(query);
+            // Retorna a lista com os objetos mapeados para DTO
             return mapper.Map<List<GetAllMovementsWithUserInfoDto>>(movements);
         }
         catch (Exception e)
         {
             throw new InvalidOperationException("Erro ao obter lista de movimentações.", e);
         }
-    }   
+    }
+    
+    // Lista as movimentações por tipo de pagamento
     public async Task<List<GetAllMovementsDto>> GetAllMovementsByPaymentTypeAsync(PaymentType paymentType)
     {
-        var movements = await movementRepository.GetAllMovementsByPaymentTypeAsync(paymentType);
-        return mapper.Map<List<GetAllMovementsDto>>(movements);
+        try
+        {
+            var movements = await movementRepository.GetAllMovementsByPaymentTypeAsync(paymentType);
+            return mapper.Map<List<GetAllMovementsDto>>(movements);
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("Erro ao obter usuário.", e);
+        }
     }
 }
