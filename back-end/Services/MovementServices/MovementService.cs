@@ -25,4 +25,16 @@ public class MovementService(IMapper mapper, IMovementRepository movementReposit
         // Mapeia movement pra MovementDto
         return mapper.Map<MovementDto>(movement);
     }
+
+    public async Task<List<Movement>> GetAllMovementsAsync()
+    {
+        try
+        {
+            return await movementRepository.GetAllMovementsAsync();
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("Erro ao obter lista de movimentações.", e);
+        }
+    }
 }

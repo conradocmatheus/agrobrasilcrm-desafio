@@ -15,4 +15,9 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
 
         return movement;
     }
+
+    public async Task<List<Movement>> GetAllMovementsAsync()
+    {
+        return await context.Movements.AsNoTracking().ToListAsync();
+    }
 }

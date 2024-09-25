@@ -24,4 +24,11 @@ public class MovementController(IMovementService movementService) : ControllerBa
             return StatusCode(500, $"Erro ao criar movimentação: {ex.Message}");
         }
     }
+
+    [HttpGet]
+    [Route("get-all")]
+    public async Task<IActionResult> GetAllMovements()
+    {
+        return Ok(await movementService.GetAllMovementsAsync());
+    }
 }
