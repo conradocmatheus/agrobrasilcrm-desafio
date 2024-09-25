@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using back_end.Data;
 using back_end.Repositories.MovementRepositories;
 using back_end.Repositories.ProductRepositories;
@@ -20,6 +21,7 @@ public class Program
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
