@@ -14,20 +14,14 @@ public class MovementController(IMovementService movementService) : ControllerBa
     {
         try
         {
+            // Chama o serviço para criar a movimentação
             var movementDto = await movementService.CreateMovementAsync(createMovementDto);
-            return Ok(movementDto);
+            // Retorna o status 201 com o resultado
+            return CreatedAtAction(nameof(CreateMovement), new { id = movementDto.Id }, movementDto);
         }
-        catch (ArgumentException e)
+        catch (Exception ex)
         {
-            return BadRequest(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(e.Message);
-        }
-        catch (Exception e)
-        {
-            return StatusCode(500, e.Message);
+            return StatusCode(500, $"Erro ao criar movimentação: {ex.Message}");
         }
     }
 }

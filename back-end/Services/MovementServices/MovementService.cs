@@ -9,23 +9,20 @@ public class MovementService(IMapper mapper, IMovementRepository movementReposit
 {
     public async Task<MovementDto> CreateMovementAsync(CreateMovementDto createMovementDto)
     {
+        // Mapeia createMovementDto para Movement e atribui para movement
         var movement = mapper.Map<Movement>(createMovementDto);
 
+        // Cria a lista de MovementProducts a partir do DTO
         movement.MovementProducts = createMovementDto.Products.Select(p => new MovementProduct
         {
             ProductId = p.ProductId,
             Quantity = p.Quantity
         }).ToList();
 
-        try
-        {
-            await movementRepository.CreateMovementAsync(movement);
-        }
-        catch (Exception e)
-        {
-            throw new InvalidOperationException("Erro ao criar movimentação.", e);
-        }
+        // Chama o metodo createMovementAsync
+        await movementRepository.CreateMovementAsync(movement);
 
+        // Mapeia movement pra MovementDto
         return mapper.Map<MovementDto>(movement);
     }
 }
