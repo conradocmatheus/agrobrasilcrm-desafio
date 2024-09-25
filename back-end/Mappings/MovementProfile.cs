@@ -28,5 +28,13 @@ public class MovementProfile : Profile
         CreateMap<Movement, GetAllMovementsDto>()
             .ForMember(dest => dest.MovementProductIds, opt => opt.MapFrom(src => src.MovementProducts.Select(mp => mp.ProductId)))
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId));
+        
+        // Teste
+        CreateMap<Movement, GetAllMovementsWithUserInfoDto>()
+            .ForMember(dest => dest.MovementProductIds, opt => opt.MapFrom(src => src.MovementProducts.Select(mp => mp.ProductId)))
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+            .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User)); // Mapeia o User
+        
+        CreateMap<User, UserInfoDto>(); // Mapeia as informações do usuário
     }
 }

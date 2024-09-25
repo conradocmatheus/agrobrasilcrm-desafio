@@ -28,12 +28,12 @@ public class MovementService(IMapper mapper, IMovementRepository movementReposit
         return mapper.Map<MovementDto>(movement);
     }
 
-    public async Task<List<GetAllMovementsDto>> GetAllMovementsAsync(QueryObject query)
+    public async Task<List<GetAllMovementsWithUserInfoDto>> GetAllMovementsAsync(QueryObject query)
     {
         try
         {
             var movements = await movementRepository.GetAllMovementsAsync(query);
-            return mapper.Map<List<GetAllMovementsDto>>(movements);
+            return mapper.Map<List<GetAllMovementsWithUserInfoDto>>(movements);
         }
         catch (Exception e)
         {

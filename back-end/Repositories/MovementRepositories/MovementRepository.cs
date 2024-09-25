@@ -24,6 +24,7 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
         
         return await context.Movements
             .Include(m => m.MovementProducts)
+            .Include(m => m.User)
             .AsNoTracking()
             .Skip(skipNumber)
             .Take(query.PageSize)
@@ -33,6 +34,7 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
     public async Task<List<Movement>> GetAllMovementsByPaymentTypeAsync(PaymentType paymentType)
     {
         return await context.Movements
+            .Include(m => m.MovementProducts)
             .Where(movement => movement.PaymentType == paymentType)
             .ToListAsync();
     }
