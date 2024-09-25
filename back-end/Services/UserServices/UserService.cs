@@ -54,8 +54,7 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
             throw new InvalidOperationException("Erro ao atualizar usuário.", e);
         }
     }
-
-    // AINDA ESTA SENDO POSSÍVEL DELETAR USUÁRIO, TENHO QUE CORRIGIR
+    
     // Deletar usuário por ID
     public async Task<UserDto?> DeleteUserByIdAsync(Guid id)
     {
@@ -68,8 +67,7 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
             {
                 throw new InvalidOperationException("Usuário não encontrado.");
             }
-
-            // ISSO NÃO ESTA FUNCIONANDO
+            
             if (user.Movements == null || user.Movements.Count > 0)
             {
                 throw new InvalidOperationException("Usuário não pode ser deletado porque possui movimentações.");
