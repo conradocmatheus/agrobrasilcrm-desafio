@@ -15,5 +15,7 @@ public class MovementDto
 public class MovementProductDto
 {
     public Guid Id { get; set; } // Id do produto
+    public string Name { get; set; }
     public int Quantity { get; set; }
+    public double Price { get; set; }
 }

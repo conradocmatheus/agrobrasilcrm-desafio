@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using back_end.DTOs.MovementDTOs;
 using back_end.Models;
+using back_end.Models.Enums;
 using back_end.Repositories.MovementRepositories;
 
 namespace back_end.Services.MovementServices;
@@ -26,15 +27,17 @@ public class MovementService(IMapper mapper, IMovementRepository movementReposit
         return mapper.Map<MovementDto>(movement);
     }
 
-    public async Task<List<Movement>> GetAllMovementsAsync()
+    public async Task<List<GetAllMovementsDto>> GetAllMovementsAsync()
     {
         try
         {
-            return await movementRepository.GetAllMovementsAsync();
+            var movements = await movementRepository.GetAllMovementsAsync();
+            return mapper.Map<List<GetAllMovementsDto>>(movements);
         }
         catch (Exception e)
         {
             throw new InvalidOperationException("Erro ao obter lista de movimentações.", e);
         }
     }
+    
 }

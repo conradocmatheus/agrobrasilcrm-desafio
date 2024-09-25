@@ -23,5 +23,10 @@ public class MovementProfile : Profile
         
         // Mapeamento de MovementProduct para MovementProductDto
         CreateMap<MovementProduct, MovementProductDto>();
+        
+        // Mapping pro GetAllMovements
+        CreateMap<Movement, GetAllMovementsDto>()
+            .ForMember(dest => dest.MovementProductIds, opt => opt.MapFrom(src => src.MovementProducts.Select(mp => mp.ProductId)))
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId));
     }
 }
