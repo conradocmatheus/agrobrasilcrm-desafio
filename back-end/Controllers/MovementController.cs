@@ -1,4 +1,5 @@
 ﻿using back_end.DTOs.MovementDTOs;
+using back_end.Helpers;
 using back_end.Models.Enums;
 using back_end.Services.MovementServices;
 using Microsoft.AspNetCore.Mvc;
@@ -28,9 +29,9 @@ public class MovementController(IMovementService movementService) : ControllerBa
 
     [HttpGet]
     [Route("get-all")]
-    public async Task<IActionResult> GetAllMovements()
+    public async Task<IActionResult> GetAllMovements([FromQuery] QueryObject query)
     {
-        return Ok(await movementService.GetAllMovementsAsync());
+        return Ok(await movementService.GetAllMovementsAsync(query));
     }
 
     [HttpGet]

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using back_end.DTOs.MovementDTOs;
+using back_end.Helpers;
 using back_end.Models;
 using back_end.Models.Enums;
 using back_end.Repositories.MovementRepositories;
@@ -27,11 +28,11 @@ public class MovementService(IMapper mapper, IMovementRepository movementReposit
         return mapper.Map<MovementDto>(movement);
     }
 
-    public async Task<List<GetAllMovementsDto>> GetAllMovementsAsync()
+    public async Task<List<GetAllMovementsDto>> GetAllMovementsAsync(QueryObject query)
     {
         try
         {
-            var movements = await movementRepository.GetAllMovementsAsync();
+            var movements = await movementRepository.GetAllMovementsAsync(query);
             return mapper.Map<List<GetAllMovementsDto>>(movements);
         }
         catch (Exception e)

@@ -1,4 +1,5 @@
 ﻿using back_end.Data;
+using back_end.Helpers;
 using back_end.Models;
 using back_end.Models.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,15 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
         return movement;
     }
 
-    public async Task<List<Movement>> GetAllMovementsAsync()
+    public async Task<List<Movement>> GetAllMovementsAsync(QueryObject query)
     {
+        var skipNumber = (query.PageNumber - 1) * query.PageSize;
+        
         return await context.Movements
             .Include(m => m.MovementProducts)
             .AsNoTracking()
+            .Skip(skipNumber)
+            .Take(query.PageSize)
             .ToListAsync();
     }
 
