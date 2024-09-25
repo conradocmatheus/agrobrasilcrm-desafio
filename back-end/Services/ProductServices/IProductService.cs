@@ -9,7 +9,7 @@ public interface IProductService
     Task<ProductDto> CreateProductAsync(CreateProductDto createProductDto);
     Task<ProductDto?> DeleteProductByIdAsync(Guid id);
     Task<ProductDto?> UpdateProductAsync(UpdateProductDto updateProductDto, Guid id);
-    Task<List<ProductDto>> GetAllProducts();
+    Task<List<ProductDto>> GetAllProducts(); // Mudar nome para async dps
     Task<ProductDto?> GetProductByIdAsync(Guid id);
     
 }

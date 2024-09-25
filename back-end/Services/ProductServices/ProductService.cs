@@ -69,7 +69,7 @@ public class ProductService(IMapper mapper, IProductRepository productRepository
         }
     }
 
-    // Listar Produtos
+    // Listar Produtos // Mudar nome para async dps
     public async Task<List<ProductDto>> GetAllProducts()
     {
         try

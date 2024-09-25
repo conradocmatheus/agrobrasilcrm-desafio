@@ -89,6 +89,7 @@ public class UserRepository(AppDbContext context) : IUserRepository
     {
         // Retorna o usuário pelo ID ou nulo se não for encontrado
         return await context.Users
+            .Include(u => u.Movements)
             .AsNoTracking() // Melhora a performance
             .FirstOrDefaultAsync(x => x.Id == id);
     }

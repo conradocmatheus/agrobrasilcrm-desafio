@@ -1,3 +1,4 @@
+using back_end.CustomActionFilters;
 using back_end.DTOs.UserDTOs;
 using back_end.Services.UserServices;
 using Microsoft.AspNetCore.Mvc;
@@ -13,15 +14,10 @@ public class UserController(IUserService userService) : ControllerBase
     // POST - User
     // POST - /api/user
     [HttpPost]
+    [ValidadeModel]
     [Route("post")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
     {
-        // Verifica se o modelo enviado na requisição JSON é valido
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        
         // Bloco try-catch para tentar chamar o método do userService
         try
         {
@@ -50,15 +46,10 @@ public class UserController(IUserService userService) : ControllerBase
     // Update - User by id
     // Update - /api/user/by-id
     [HttpPut]
+    [ValidadeModel]
     [Route("update/by-id/{id:Guid}")]
     public async Task<IActionResult> UpdateUserById([FromBody] CreateUserDto createUserDto, [FromRoute] Guid id)
     {
-        // Verifica o corpo da requisição, se esta tudo nos conformes...
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        
         // Tenta atualizar o usuário chamando o método do service
         try
         {
@@ -98,7 +89,7 @@ public class UserController(IUserService userService) : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest("Erro ao deletar usuário: " + e.Message);
+            return BadRequest(e.Message);
         }
     }
     
