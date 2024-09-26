@@ -53,8 +53,7 @@ public class MovementController(IMovementService movementService) : ControllerBa
 
         return Ok(movements);
     }
-
-    // Pensando se quando apagar a movimentação deverá ser apagada o movementProduct tbm
+    
     // DELETE - Movement
     // DELETE - /api/movement/delete/{id}
     [HttpDelete]
