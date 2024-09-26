@@ -1,4 +1,4 @@
-﻿namespace back_end.DTOs.UserDTOs;
+﻿namespace back_end.DTOs.ProductDTOs;
 
 public class UpdateProductDto
 {
