@@ -63,4 +63,14 @@ public class MovementController(IMovementService movementService) : ControllerBa
         var deletedMovement = await movementService.DeleteMovementByIdAsync(id);
         return Ok(deletedMovement);
     }
+    
+    [HttpGet("export")]
+    public async Task<IActionResult> ExportMovements(string filterType, int? month = null, int? year = null)
+    {
+        var movements = await movementService.GetMovementsByFilterAsync(filterType, month, year);
+        
+        // Falta converter pra .csv
+        
+        return Ok(movements);
+    }
 }

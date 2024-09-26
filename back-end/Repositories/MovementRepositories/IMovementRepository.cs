@@ -15,6 +15,8 @@ public interface IMovementRepository
     Task<double> GetProductPriceAsync(Guid productId);
     Task<bool> UserExistsAsync(Guid id);
     Task<bool> ProductExistsAsync(Guid id);
-
+    
+    Task<List<Movement>> GetMovementsLast30DaysAsync();
+    Task<List<Movement>> GetMovementsByMonthYearAsync(int month, int year);
     Task<List<Movement>> GetAllMovementsAsync();
 }

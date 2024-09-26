@@ -83,4 +83,25 @@ public class MovementService(
         // Depois a movimentação deletada
         return await movementRepository.DeleteMovementByIdAsync(id);
     }
+    
+    public async Task<List<Movement>> GetMovementsByFilterAsync(string filterType, int? month = null, int? year = null)
+    {
+        switch (filterType)
+        {
+            case "last30days":
+                return await movementRepository.GetMovementsLast30DaysAsync();
+
+            case "byMonthYear":
+                if (month.HasValue && year.HasValue)
+                {
+                    return await movementRepository.GetMovementsByMonthYearAsync(month.Value, year.Value);
+                }
+                throw new ArgumentException("Month and year must be provided for this filter type.");
+
+            case "all":
+                return await movementRepository.GetAllMovementsAsync();
+            default:
+                throw new ArgumentException("Invalid filter type");
+        }
+    }
 }
