@@ -18,31 +18,13 @@ public class UserController(IUserService userService) : ControllerBase
     [Route("post")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
     {
-        // Bloco try-catch para tentar chamar o método do userService
-        try
-        {
-            // Chama o método do UserService pra criar o usuário
-            var userDto = await userService.CreateUserAsync(createUserDto);
-            // Retorna 201 se der certo
-            return CreatedAtAction(nameof(GetUserById), new { id = userDto.Id }, userDto);
-        }
-        catch (ArgumentException e) // Para argumentos inválidos
-        {
-            return BadRequest(e.Message);
-        }
-        catch (InvalidOperationException e) // Para operações inválidas
-        {
-            return BadRequest(e.Message);
-        }
-        catch (Exception e) // Para erros genéricos
-        {
-            return StatusCode(500, e.Message);
-        }
+        // Chama o método do UserService pra criar o usuário
+        var userDto = await userService.CreateUserAsync(createUserDto);
+
+        // Retorna 201 se der certo
+        return CreatedAtAction(nameof(GetUserById), new { id = userDto.Id }, userDto);
     }
     
-    //========================
-    // AINDA ESTA SENDO POSSIVEL ATUALIZAR E COLOCAR IDADE MENOR DE 18
-    //========================
     // Update - User by id
     // Update - /api/user/by-id
     [HttpPut]
@@ -50,92 +32,64 @@ public class UserController(IUserService userService) : ControllerBase
     [Route("update/by-id/{id:Guid}")]
     public async Task<IActionResult> UpdateUserById([FromBody] CreateUserDto createUserDto, [FromRoute] Guid id)
     {
-        // Tenta atualizar o usuário chamando o método do service
-        try
-        {
-            var userDto = await userService.UpdateUserAsync(createUserDto, id);
+        var userDto = await userService.UpdateUserAsync(createUserDto, id);
 
-            if (userDto == null)
-            {
-                return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
-            }
-
-            return Ok(userDto);
-        }
-        // Se não conseguir, lança uma exception
-        catch (Exception e)
+        if (userDto == null)
         {
-            return BadRequest("Erro ao atualizar usuário: " + e.Message);
+            return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
         }
+
+        return Ok(userDto);
     }
-    
+
     // Delete - User by id
     // Delete - /api/user/by-id
     [HttpDelete]
     [Route("delete/by-id/{id:Guid}")]
     public async Task<IActionResult> DeleteUserById([FromRoute] Guid id)
     {
-        try
-        {
-            // Atribui o usuário deletado pra deletedUser
-            var deletedUser = await userService.DeleteUserByIdAsync(id);
+        // Atribui o usuário deletado pra deletedUser
+        var deletedUser = await userService.DeleteUserByIdAsync(id);
 
-            if (deletedUser == null)
-            {
-                return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
-            }
-
-            return Ok(deletedUser);
-        }
-        catch (Exception e)
+        if (deletedUser == null)
         {
-            return BadRequest(e.Message);
+            return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
         }
+
+        return Ok(deletedUser);
     }
-    
+
     // GET - Users
     // GET - /api/user/by-creation-date
     [HttpGet]
     [Route("get/by-creation-date")]
     public async Task<IActionResult> GetUsersByCreatedAt()
     {
-        try
+        // Atribui a lista de usuarios pra userCreatedAtDto
+        var userCreatedAtDto = await userService.GetUsersByCreatedAtAsync();
+        // Verifica se tem algum usuário na lista
+        if (userCreatedAtDto.Count == 0)
         {
-            // Atribui a lista de usuarios pra userCreatedAtDto
-            var userCreatedAtDto = await userService.GetUsersByCreatedAtAsync();
-            // Verifica se tem algum usuário na lista
-            if (userCreatedAtDto.Count == 0)
-            {
-                return NotFound("Nenhum usuário foi encontrado");
-            }
-            return Ok(userCreatedAtDto);
+            return NotFound("Nenhum usuário foi encontrado");
         }
-        catch (Exception e)
-        {
-            return StatusCode(500, e.Message);
-        }
+
+        return Ok(userCreatedAtDto);
     }
-    
+
     // GET - User by id
     // GET - /api/user/by-id
     [HttpGet]
     [Route("get/by-id/{id:Guid}")]
     public async Task<IActionResult> GetUserById([FromRoute] Guid id)
     {
-        try
+        // Atribui o usuário encontrado pra selectedUser
+        var selectedUser = await userService.GetUserByIdAsync(id);
+        // Verifica se o usuário foi encontrado
+        if (selectedUser == null)
         {
-            // Atribui o usuário encontrado pra selectedUser
-            var selectedUser = await userService.GetUserByIdAsync(id);
-            // Verifica se o usuário foi encontrado
-            if (selectedUser == null)
-            {
-                return NotFound($"Usuário com ID {id} não foi encontrado");
-            }
-            return Ok(selectedUser);
+            return NotFound($"Usuário com ID {id} não foi encontrado");
         }
-        catch (Exception e)
-        {
-            return StatusCode(500, "Erro interno no servidor.");
-        }
+
+        return Ok(selectedUser);
     }
 }

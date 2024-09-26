@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using back_end.Data;
+using back_end.Middlewares;
 using back_end.Repositories.MovementRepositories;
 using back_end.Repositories.ProductRepositories;
 using back_end.Repositories.UserRepositories;
@@ -56,6 +57,9 @@ public class Program
 
         app.UseHttpsRedirection();
         app.UseAuthorization();
+        
+        // Registra o middleware de tratamento de erros
+        app.UseMiddleware<ErrorHandlerMiddleware>();
 
         app.MapControllers();
         
