@@ -69,16 +69,17 @@ public class MovementService(
         return mapper.Map<List<GetAllMovementsDto>>(movements);
     }
 
+    // Deletar uma movimentação por ID
     public async Task<Movement?> DeleteMovementByIdAsync(Guid id)
     {
+        // Primeiro procura a movimentação por id pra ver se ela existe
         var movement = await movementRepository.GetMovementByIdAsync(id);
-
         if (movement == null)
         {
             throw new InvalidOperationException("Movimentação não encontrada.");
         }
 
-        var deletedMovement = await movementRepository.DeleteMovementByIdAsync(id);
-        return deletedMovement;
+        // Depois a movimentação deletada
+        return await movementRepository.DeleteMovementByIdAsync(id);
     }
 }
