@@ -10,4 +10,6 @@ public interface IMovementService
     Task<MovementDto> CreateMovementAsync(CreateMovementDto createMovementDto);
     Task<List<GetAllMovementsWithUserInfoDto>> GetAllMovementsAsync(QueryObject query);
     Task<List<GetAllMovementsDto>> GetAllMovementsByPaymentTypeAsync(PaymentType paymentType);
+    Task<Movement?> DeleteMovementByIdAsync(Guid id);
+    
 }

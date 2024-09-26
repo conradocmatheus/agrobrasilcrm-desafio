@@ -46,6 +46,8 @@ public class MovementService(
         // Retorna a movimentação criada para MovementDto
         return mapper.Map<MovementDto>(movement);
     }
+    
+    
 
     // Listar movimentações
     public async Task<List<GetAllMovementsWithUserInfoDto>> GetAllMovementsAsync(QueryObject query)
@@ -61,5 +63,18 @@ public class MovementService(
     {
         var movements = await movementRepository.GetAllMovementsByPaymentTypeAsync(paymentType);
         return mapper.Map<List<GetAllMovementsDto>>(movements);
+    }
+
+    public async Task<Movement?> DeleteMovementByIdAsync(Guid id)
+    {
+        var movement = await movementRepository.GetMovementByIdAsync(id);
+
+        if (movement == null)
+        {
+            throw new InvalidOperationException("Movimentação não encontrada.");
+        }
+
+        var deletedMovement = await movementRepository.DeleteMovementByIdAsync(id);
+        return deletedMovement;
     }
 }

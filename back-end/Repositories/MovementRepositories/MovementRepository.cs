@@ -30,7 +30,7 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
     public async Task<List<Movement>> GetAllMovementsAsync(QueryObject query)
     {
         var skipNumber = (query.PageNumber - 1) * query.PageSize;
-        
+
         return await context.Movements
             .Include(m => m.MovementProducts)
             .Include(m => m.User)
@@ -58,18 +58,26 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
         {
             return null;
         }
+
         context.Movements.Remove(existingMovement);
         await context.SaveChangesAsync();
         return existingMovement;
     }
 
+    // Get movement by id
+    public async Task<Movement?> GetMovementByIdAsync(Guid id)
+    {
+        return await context.Movements
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
 
     // Checar se o usuário existe
     public async Task<bool> UserExistsAsync(Guid userId)
     {
         return await context.Users.AnyAsync(u => u.Id == userId);
     }
-    
+
     // Checar se o produto existe
     public async Task<bool> ProductExistsAsync(Guid productId)
     {
