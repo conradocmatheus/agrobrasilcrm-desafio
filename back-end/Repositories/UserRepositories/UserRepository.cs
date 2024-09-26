@@ -65,7 +65,7 @@ public class UserRepository(AppDbContext context) : IUserRepository
         // Retorna o usuário pelo ID ou nulo se não for encontrado
         return await context.Users
             .OrderBy(user => user.CreatedAt)
-            .AsNoTracking() // Melhora a performance
+            .AsNoTracking()
             .ToListAsync();
     }
 
@@ -75,7 +75,7 @@ public class UserRepository(AppDbContext context) : IUserRepository
         // Retorna o usuário pelo ID ou nulo se não for encontrado
         return await context.Users
             .Include(u => u.Movements)
-            .AsNoTracking() // Melhora a performance
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 }
