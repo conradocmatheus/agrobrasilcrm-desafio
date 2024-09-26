@@ -13,19 +13,6 @@ public class ProductService(IMapper mapper, IProductRepository productRepository
     // Criar Produtos
     public async Task<ProductDto> CreateProductAsync(CreateProductDto createProductDto)
     {
-        // Depois colocar que o nome n pode ser numero
-        // Verifica se o nome ta vazio
-        if (string.IsNullOrWhiteSpace(createProductDto.Name))
-        {
-            throw new ArgumentException("O campo Nome é obrigatório.");
-        }
-
-        // Verifica o preco do produto
-        if (createProductDto.Price <= 0)
-        {
-            throw new ArgumentException("O Preço deve ser maior que zero.");
-        }
-
         // Mapeia o createProductDto pra product
         var product = mapper.Map<Product>(createProductDto);
 
@@ -39,25 +26,6 @@ public class ProductService(IMapper mapper, IProductRepository productRepository
     // Atualizar Produtos por ID
     public async Task<ProductDto?> UpdateProductAsync(UpdateProductDto updateProductDto, Guid id)
     {
-        
-        // Verifica se o nome ta vazio
-        if (string.IsNullOrWhiteSpace(updateProductDto.Name))
-        {
-            throw new ArgumentException("O campo Nome é obrigatório.");
-        }
-
-        // Verifica a quantidade do produto
-        if (updateProductDto.Quantity < 0)
-        {
-            throw new ArgumentException("Quantidade deve ser zero ou maior.");
-        }
-
-        // Verifica o preco do produto
-        if (updateProductDto.Price <= 0)
-        {
-            throw new ArgumentException("O Preço deve ser maior que zero.");
-        }
-        
         // Faz o mapeamento de updateProductDto pra Product
         var toUpdateProduct = mapper.Map<Product>(updateProductDto);
 
