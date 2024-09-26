@@ -16,17 +16,10 @@ public class MovementController(IMovementService movementService) : ControllerBa
     [Route("post")]
     public async Task<IActionResult> CreateMovement([FromBody] CreateMovementDto createMovementDto)
     {
-        try
-        {
-            // Chama o serviço para criar a movimentação
-            var movementDto = await movementService.CreateMovementAsync(createMovementDto);
-            // Retorna o status 201 com o resultado
-            return CreatedAtAction(nameof(CreateMovement), new { id = movementDto.Id }, movementDto);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Erro ao criar movimentação: {ex.Message}");
-        }
+        // Chama o serviço para criar a movimentação
+        var movementDto = await movementService.CreateMovementAsync(createMovementDto);
+        // Retorna o status 201 com o resultado
+        return CreatedAtAction(nameof(CreateMovement), new { id = movementDto.Id }, movementDto);
     }
 
     // GET - Movements
@@ -35,20 +28,13 @@ public class MovementController(IMovementService movementService) : ControllerBa
     [Route("get-all")]
     public async Task<IActionResult> GetAllMovements([FromQuery] QueryObject query)
     {
-        try
+        var movements = await movementService.GetAllMovementsAsync(query);
+        if (movements.Count == 0)
         {
-            var movements = await movementService.GetAllMovementsAsync(query);
-            if (movements.Count == 0)
-            {
-                return NotFound("Nenhum movimento encontrado.");
-            }
-            return Ok(movements);
+            return NotFound("Nenhum movimento encontrado.");
         }
-        catch (Exception e)
-        {
-            return StatusCode(500, e.Message);
-        }
-        
+
+        return Ok(movements);
     }
 
     // GET - Movements
@@ -57,18 +43,12 @@ public class MovementController(IMovementService movementService) : ControllerBa
     [Route("get-all/by-payment-type/{paymentType}")]
     public async Task<IActionResult> GetAllMovementsByPaymentType([FromRoute] PaymentType paymentType)
     {
-        try
+        var movements = await movementService.GetAllMovementsByPaymentTypeAsync(paymentType);
+        if (movements.Count == 0)
         {
-            var movements = await movementService.GetAllMovementsByPaymentTypeAsync(paymentType);
-            if (movements.Count == 0)
-            {
-                return NotFound("Nenhum movimento encontrado.");
-            }
-            return Ok(movements);
+            return NotFound("Nenhum movimento encontrado.");
         }
-        catch (Exception e)
-        {
-            return StatusCode(500, e.Message);
-        }
+
+        return Ok(movements);
     }
 }

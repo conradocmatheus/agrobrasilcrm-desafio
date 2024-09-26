@@ -32,30 +32,16 @@ public class MovementService(IMapper mapper, IMovementRepository movementReposit
     // Listar movimentações
     public async Task<List<GetAllMovementsWithUserInfoDto>> GetAllMovementsAsync(QueryObject query)
     {
-        try
-        {
-            // Atribui a lista que o método do repository retorna em uma var movements
-            var movements = await movementRepository.GetAllMovementsAsync(query);
-            // Retorna a lista com os objetos mapeados para DTO
-            return mapper.Map<List<GetAllMovementsWithUserInfoDto>>(movements);
-        }
-        catch (Exception e)
-        {
-            throw new InvalidOperationException("Erro ao obter lista de movimentações.", e);
-        }
+        // Atribui a lista que o método do repository retorna em uma var movements
+        var movements = await movementRepository.GetAllMovementsAsync(query);
+        // Retorna a lista com os objetos mapeados para DTO
+        return mapper.Map<List<GetAllMovementsWithUserInfoDto>>(movements);
     }
-    
+
     // Lista as movimentações por tipo de pagamento
     public async Task<List<GetAllMovementsDto>> GetAllMovementsByPaymentTypeAsync(PaymentType paymentType)
     {
-        try
-        {
-            var movements = await movementRepository.GetAllMovementsByPaymentTypeAsync(paymentType);
-            return mapper.Map<List<GetAllMovementsDto>>(movements);
-        }
-        catch (Exception e)
-        {
-            throw new InvalidOperationException("Erro ao obter usuário.", e);
-        }
+        var movements = await movementRepository.GetAllMovementsByPaymentTypeAsync(paymentType);
+        return mapper.Map<List<GetAllMovementsDto>>(movements);
     }
 }
