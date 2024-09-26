@@ -7,8 +7,9 @@ public class CreateProductDto
 {
     [Required(ErrorMessage = "O nome é obrigatório.")]
     [NoNumbers]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     
-    [Required(ErrorMessage = "Preco e obrigatorio.")]
-    public double Price { get; set; }
+    [Required(ErrorMessage = "O preço é obrigatório.")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "O preço deve ser maior que 0.01.")]
+    public double Price { get; set; } = 0.01;
 }
