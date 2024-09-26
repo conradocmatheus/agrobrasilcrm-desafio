@@ -13,6 +13,9 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
     {
         // Cria um id do tipo GUID pra movimentação
         movement.Id = Guid.NewGuid();
+        // Atribui o valor do UTC now para as datas
+        movement.CreatedAt = DateTime.UtcNow;
+        movement.UpdatedAt = DateTime.UtcNow;
 
         // Adiciona a movimentação no banco
         await context.Movements.AddAsync(movement);
