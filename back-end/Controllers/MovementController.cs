@@ -1,4 +1,5 @@
-﻿using back_end.DTOs.MovementDTOs;
+﻿using back_end.CustomActionFilters;
+using back_end.DTOs.MovementDTOs;
 using back_end.Helpers;
 using back_end.Models.Enums;
 using back_end.Services.MovementServices;
@@ -14,6 +15,7 @@ public class MovementController(IMovementService movementService) : ControllerBa
     // POST - /api/movement/post
     [HttpPost]
     [Route("post")]
+    [ValidadeModel]
     public async Task<IActionResult> CreateMovement([FromBody] CreateMovementDto createMovementDto)
     {
         // Chama o serviço para criar a movimentação
@@ -55,7 +57,7 @@ public class MovementController(IMovementService movementService) : ControllerBa
     // Pensando se quando apagar a movimentação deverá ser apagada o movementProduct tbm
     // DELETE - Movement
     // DELETE - /api/movement/delete/{id}
-    [HttpGet]
+    [HttpDelete]
     [Route("delete/{id:Guid}")]
     public async Task<IActionResult> DeleteMovementById([FromRoute] Guid id)
     {

@@ -20,19 +20,25 @@ public class MovementService(
             throw new Exception("Usuário com esse id não encontrado.");
         }
 
-        // Verifica se os ids de produto existem
+        double totalValue = 0;
+        
+        // Calcula o valor total e verifica a existência dos produtos
         foreach (var product in createMovementDto.Products)
         {
             if (!await movementRepository.ProductExistsAsync(product.ProductId))
             {
                 throw new Exception($"Produto com ID {product.ProductId} não encontrado.");
             }
+
+            var productPrice = await movementRepository.GetProductPriceAsync(product.ProductId);
+            totalValue += productPrice * product.Quantity;
         }
 
         // Cria a movimentação diretamente a partir do DTO
         var movement = new Movement
         {
             UserId = createMovementDto.UserId,
+            TotalValue = totalValue,
             MovementProducts = createMovementDto.Products.Select(p => new MovementProduct
             {
                 ProductId = p.ProductId,
@@ -46,8 +52,6 @@ public class MovementService(
         // Retorna a movimentação criada para MovementDto
         return mapper.Map<MovementDto>(movement);
     }
-    
-    
 
     // Listar movimentações
     public async Task<List<GetAllMovementsWithUserInfoDto>> GetAllMovementsAsync(QueryObject query)

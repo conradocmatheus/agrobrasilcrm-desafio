@@ -8,6 +8,7 @@ public class MovementDto
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public PaymentType PaymentType { get; set; }
+    public double TotalValue { get; set; }
     public bool IsBlocked { get; set; }
     public List<MovementProductDto> Products { get; set; } // Lista de produtos movimentados
 }

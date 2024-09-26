@@ -12,6 +12,7 @@ public interface IMovementRepository
     Task<Movement?> DeleteMovementByIdAsync(Guid id);
     Task<Movement?> GetMovementByIdAsync(Guid id);
 
+    Task<double> GetProductPriceAsync(Guid productId);
     Task<bool> UserExistsAsync(Guid id);
     Task<bool> ProductExistsAsync(Guid id);
 }

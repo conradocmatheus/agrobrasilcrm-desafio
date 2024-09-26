@@ -71,6 +71,14 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
     }
+    
+    // Pegar o preço do produto
+    public async Task<double> GetProductPriceAsync(Guid productId)
+    {
+        var product = await context.Products.FindAsync(productId);
+        return product != null ? product.Price : 0;
+    }
+    
 
     // Checar se o usuário existe
     public async Task<bool> UserExistsAsync(Guid userId)
