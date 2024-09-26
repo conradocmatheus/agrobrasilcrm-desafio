@@ -30,7 +30,7 @@ public class MovementController(IMovementService movementService) : ControllerBa
     [Route("get-all")]
     public async Task<IActionResult> GetAllMovements([FromQuery] QueryObject query)
     {
-        var movements = await movementService.GetAllMovementsAsync(query);
+        var movements = await movementService.GetAllMovementsPaginatedAsync(query);
         if (movements.Count == 0)
         {
             return NotFound("Nenhum movimento encontrado.");

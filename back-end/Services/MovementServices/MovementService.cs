@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using AutoMapper;
 using back_end.DTOs.MovementDTOs;
 using back_end.Helpers;
 using back_end.Models;
@@ -54,10 +55,10 @@ public class MovementService(
     }
 
     // Listar movimentações
-    public async Task<List<GetAllMovementsWithUserInfoDto>> GetAllMovementsAsync(QueryObject query)
+    public async Task<List<GetAllMovementsWithUserInfoDto>> GetAllMovementsPaginatedAsync(QueryObject query)
     {
         // Atribui a lista que o método do repository retorna em uma var movements
-        var movements = await movementRepository.GetAllMovementsAsync(query);
+        var movements = await movementRepository.GetAllMovementsPaginatedAsync(query);
         // Retorna a lista com os objetos mapeados para DTO
         return mapper.Map<List<GetAllMovementsWithUserInfoDto>>(movements);
     }

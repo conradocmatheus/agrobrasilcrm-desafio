@@ -1,4 +1,5 @@
-﻿using back_end.Data;
+﻿using System.Globalization;
+using back_end.Data;
 using back_end.Helpers;
 using back_end.Models;
 using back_end.Models.Enums;
@@ -27,7 +28,7 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
     }
 
     // Listar movimentações paginadas e mostrando info do user
-    public async Task<List<Movement>> GetAllMovementsAsync(QueryObject query)
+    public async Task<List<Movement>> GetAllMovementsPaginatedAsync(QueryObject query)
     {
         var skipNumber = (query.PageNumber - 1) * query.PageSize;
 
@@ -90,5 +91,37 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
     public async Task<bool> ProductExistsAsync(Guid productId)
     {
         return await context.Products.AnyAsync(p => p.Id == productId);
+    }
+    
+    // Listar todas as movimentações nos últimos 30 dias e retorna uma lista
+    public async Task<List<Movement>> GetMovementsLast30DaysAsync()
+    {
+        var thirtyDaysAgo = DateTime.UtcNow.AddDays(-30);
+
+        return await context.Movements
+            .Where(movement => movement.CreatedAt >= thirtyDaysAgo)
+            .OrderBy(movement => movement.CreatedAt)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+    
+    // Listar movimentações de um mês e ano específicos e retorna em lista
+    public async Task<List<Movement>> GetMovementsByMonthYearAsync(int month, int year)
+    {
+        // Cria as datas de início e fim do mês
+        var startDate = new DateTime(year, month, 1);
+        var endDate = startDate.AddMonths(1).AddDays(-1);
+
+        return await context.Movements
+            .Where(movement => movement.CreatedAt >= startDate && movement.CreatedAt <= endDate)
+            .OrderBy(movement => movement.CreatedAt)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+    
+    // Pega todas as movimentações e retorna uma lista
+    public async Task<List<Movement>> GetAllMovementsAsync()
+    {
+        return await context.Movements.ToListAsync();
     }
 }
