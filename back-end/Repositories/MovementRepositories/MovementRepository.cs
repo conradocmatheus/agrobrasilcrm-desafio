@@ -2,6 +2,7 @@
 using back_end.Helpers;
 using back_end.Models;
 using back_end.Models.Enums;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace back_end.Repositories.MovementRepositories;
@@ -47,7 +48,22 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
             .Where(movement => movement.PaymentType == paymentType)
             .ToListAsync();
     }
-    
+
+    // Deletar uma movimentação por id
+    public async Task<Movement?> DeleteMovementByIdAsync(Guid id)
+    {
+        var existingMovement = await context.Movements.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (existingMovement == null)
+        {
+            return null;
+        }
+        context.Movements.Remove(existingMovement);
+        await context.SaveChangesAsync();
+        return existingMovement;
+    }
+
+
     // Checar se o usuário existe
     public async Task<bool> UserExistsAsync(Guid userId)
     {

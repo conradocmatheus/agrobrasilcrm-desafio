@@ -9,6 +9,7 @@ public interface IMovementRepository
     Task<Movement> CreateMovementAsync(Movement movement);
     Task<List<Movement>> GetAllMovementsAsync(QueryObject query);
     Task<List<Movement>> GetAllMovementsByPaymentTypeAsync(PaymentType paymentType);
+    Task<Movement?> DeleteMovementByIdAsync(Guid id);
 
     Task<bool> UserExistsAsync(Guid id);
     Task<bool> ProductExistsAsync(Guid id);
