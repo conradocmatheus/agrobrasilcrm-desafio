@@ -1,8 +1,12 @@
-﻿using back_end.CustomActionFilters;
+﻿using System.Collections;
+using System.Globalization;
+using System.Text;
+using back_end.CustomActionFilters;
 using back_end.DTOs.MovementDTOs;
 using back_end.Helpers;
 using back_end.Models.Enums;
 using back_end.Services.MovementServices;
+using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Controllers;
@@ -69,8 +73,17 @@ public class MovementController(IMovementService movementService) : ControllerBa
     {
         var movements = await movementService.GetMovementsByFilterAsync(filterType, month, year);
         
-        // Falta converter pra .csv
-        
-        return Ok(movements);
+        // Usa CsvHelper para criar o CSV diretamente no método
+        await using var writer = new StringWriter();
+        await using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
+        // Escreve os registros da lista movements diretamente no CSV
+        await csvWriter.WriteRecordsAsync((IEnumerable)movements);
+
+        // Converte o resultado do CSV para um array de bytes
+        var csvContent = writer.ToString();
+        var bytes = Encoding.UTF8.GetBytes(csvContent);
+
+        // Retorna o arquivo CSV
+        return File(bytes, "text/csv", "movements.csv");
     }
 }
