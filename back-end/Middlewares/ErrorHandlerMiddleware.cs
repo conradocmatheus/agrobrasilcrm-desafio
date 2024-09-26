@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace back_end.Middlewares;
 
@@ -30,9 +31,11 @@ public class ErrorHandlerMiddleware(RequestDelegate next)
         response.StatusCode = e switch
         {
             // Seta o StatusCode de acordo com a excecao lancacada
-            ArgumentException => (int)HttpStatusCode.BadRequest,
-            InvalidOperationException => (int)HttpStatusCode.BadRequest,
-            _ => (int)HttpStatusCode.InternalServerError
+            DbUpdateException => 400,
+            ArgumentNullException => 400,
+            ArgumentException => 400,
+            InvalidOperationException => 400,
+            _ => 500
             
         };
 
