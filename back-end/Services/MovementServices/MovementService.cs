@@ -7,25 +7,43 @@ using back_end.Repositories.MovementRepositories;
 
 namespace back_end.Services.MovementServices;
 
-public class MovementService(IMapper mapper, IMovementRepository movementRepository) : IMovementService
+public class MovementService(
+    IMapper mapper,
+    IMovementRepository movementRepository) : IMovementService
 {
     // Criar movimentação
     public async Task<MovementDto> CreateMovementAsync(CreateMovementDto createMovementDto)
     {
-        // Mapeia createMovementDto para Movement e atribui para movement
-        var movement = mapper.Map<Movement>(createMovementDto);
-
-        // Cria a lista de MovementProducts a partir do DTO
-        movement.MovementProducts = createMovementDto.Products.Select(p => new MovementProduct
+        // Verifica se o usuário existe
+        if (!await movementRepository.UserExistsAsync(createMovementDto.UserId))
         {
-            ProductId = p.ProductId,
-            Quantity = p.Quantity
-        }).ToList();
+            throw new Exception("Usuário com esse id não encontrado.");
+        }
 
-        // Chama o método createMovementAsync
+        // Verifica se os ids de produto existem
+        foreach (var product in createMovementDto.Products)
+        {
+            if (!await movementRepository.ProductExistsAsync(product.ProductId))
+            {
+                throw new Exception($"Produto com ID {product.ProductId} não encontrado.");
+            }
+        }
+
+        // Cria a movimentação diretamente a partir do DTO
+        var movement = new Movement
+        {
+            UserId = createMovementDto.UserId,
+            MovementProducts = createMovementDto.Products.Select(p => new MovementProduct
+            {
+                ProductId = p.ProductId,
+                Quantity = p.Quantity
+            }).ToList()
+        };
+
+        // Chama o método para criar a movimentação
         await movementRepository.CreateMovementAsync(movement);
 
-        // Mapeia movement pra MovementDto
+        // Retorna a movimentação criada para MovementDto
         return mapper.Map<MovementDto>(movement);
     }
 

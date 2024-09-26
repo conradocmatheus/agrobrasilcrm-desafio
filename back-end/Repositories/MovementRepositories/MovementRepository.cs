@@ -47,4 +47,16 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
             .Where(movement => movement.PaymentType == paymentType)
             .ToListAsync();
     }
+    
+    // Checar se o usuário existe
+    public async Task<bool> UserExistsAsync(Guid userId)
+    {
+        return await context.Users.AnyAsync(u => u.Id == userId);
+    }
+    
+    // Checar se o produto existe
+    public async Task<bool> ProductExistsAsync(Guid productId)
+    {
+        return await context.Products.AnyAsync(p => p.Id == productId);
+    }
 }
