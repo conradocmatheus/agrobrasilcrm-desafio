@@ -21,57 +21,42 @@ public class UserRepository(AppDbContext context) : IUserRepository
         // Retorna o usuário criado, com id e datas préviamente preenchidas
         return user;
     }
-    
+
     // Atualizar usuário no banco por ID
     public async Task<User?> UpdateUserAsync(User user, Guid id)
     {
-        try
+        var toUpdateUser = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (toUpdateUser == null)
         {
-            var toUpdateUser = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (toUpdateUser == null)
-            {
-                return null; // Retorna null se o usuário não for encontrado
-            }
-
-            // Atualiza as propriedades
-            toUpdateUser.Name = user.Name;
-            toUpdateUser.Email = user.Email;
-            toUpdateUser.Birthday = user.Birthday;
-            toUpdateUser.UpdatedAt = DateTime.Now;
-
-            await context.SaveChangesAsync();
-            return toUpdateUser; // Retorna o usuário atualizado
+            return null; // Retorna null se o usuário não for encontrado
         }
-        catch (DbUpdateException e)
-        {
-            throw new InvalidOperationException($"Não foi possível atualizar," +
-                                                $" usuário com ID {id} não encontrado.", e);
-        }
+
+        // Atualiza as propriedades
+        toUpdateUser.Name = user.Name;
+        toUpdateUser.Email = user.Email;
+        toUpdateUser.Birthday = user.Birthday;
+        toUpdateUser.UpdatedAt = DateTime.Now;
+
+        await context.SaveChangesAsync();
+        return toUpdateUser; // Retorna o usuário atualizado
     }
-    
+
     // Deletar usuário no banco por ID
     public async Task<User?> DeleteUserByIdAsync(Guid id)
     {
-        try
-        {
-            // Pega o usuário com o id fornecido ou null se não encontrar
-            var existingUser = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
+        // Pega o usuário com o id fornecido ou null se não encontrar
+        var existingUser = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (existingUser == null)
-            {
-                return null;
-            }
-
-            // Remove o usuário do banco, salva e retorna o próprio usuário removido
-            context.Users.Remove(existingUser);
-            await context.SaveChangesAsync();
-            return existingUser;
-        }
-        catch (DbUpdateException e)
+        if (existingUser == null)
         {
-            throw new InvalidOperationException("Não foi possível deletar o usuário.", e);
+            return null;
         }
+
+        // Remove o usuário do banco, salva e retorna o próprio usuário removido
+        context.Users.Remove(existingUser);
+        await context.SaveChangesAsync();
+        return existingUser;
     }
 
     // Listar usuários de acordo com a data de criação
