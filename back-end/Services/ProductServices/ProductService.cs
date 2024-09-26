@@ -13,92 +13,87 @@ public class ProductService(IMapper mapper, IProductRepository productRepository
     // Criar Produtos
     public async Task<ProductDto> CreateProductAsync(CreateProductDto createProductDto)
     {
-        try
+        // Verifica se o nome ta vazio
+        if (string.IsNullOrWhiteSpace(createProductDto.Name))
         {
-            // Mapeia o createProductDto pra product
-            var product = mapper.Map<Product>(createProductDto);
-            
-            // Chama o método do repositório que salva o usuário no banco
-            await productRepository.CreateProductAsync(product);
-            
-            // Retorna o CreateProductDto mapeado de product
-            return mapper.Map<ProductDto>(product);
+            throw new ArgumentException("O campo Nome é obrigatório.");
         }
-        catch (Exception e)
+
+        // Verifica o preco do produto
+        if (createProductDto.Price <= 0)
         {
-            throw new InvalidOperationException("Erro ao criar produto.", e);
+            throw new ArgumentException("O Preço deve ser maior que zero.");
         }
+
+        // Mapeia o createProductDto pra product
+        var product = mapper.Map<Product>(createProductDto);
+
+        // Chama o método do repositório que salva o produto no banco
+        await productRepository.CreateProductAsync(product);
+
+        // Retorna o CreateProductDto mapeado de product
+        return mapper.Map<ProductDto>(product);
     }
 
     // Atualizar Produtos por ID
     public async Task<ProductDto?> UpdateProductAsync(UpdateProductDto updateProductDto, Guid id)
     {
-        try
+        
+        // Verifica se o nome ta vazio
+        if (string.IsNullOrWhiteSpace(updateProductDto.Name))
         {
-            // Faz o mapeamento de updateProductDto pra Product
-            var toUpdateProduct = mapper.Map<Product>(updateProductDto);
-            
-            // Chama o update do repositório
-            await productRepository.UpdateProductAsync(toUpdateProduct, id);
-            
-            // E Retorna o produto mapeado
-            return mapper.Map<ProductDto>(updateProductDto);
-            //============= CORRIGIR
-            // Produto retorna com id toda zerada na resposta, mas fica certo no banco
-            //============= CORRIGIR
-        }   
-        catch (Exception e)
-        {
-            throw new InvalidOperationException("Erro ao atualizar produto.", e);
+            throw new ArgumentException("O campo Nome é obrigatório.");
         }
+
+        // Verifica a quantidade do produto
+        if (updateProductDto.Quantity < 0)
+        {
+            throw new ArgumentException("Quantidade deve ser zero ou maior.");
+        }
+
+        // Verifica o preco do produto
+        if (updateProductDto.Price <= 0)
+        {
+            throw new ArgumentException("O Preço deve ser maior que zero.");
+        }
+        
+        // Faz o mapeamento de updateProductDto pra Product
+        var toUpdateProduct = mapper.Map<Product>(updateProductDto);
+
+        // Chama o update do repositório
+        await productRepository.UpdateProductAsync(toUpdateProduct, id);
+
+        // E Retorna o produto mapeado
+        return mapper.Map<ProductDto>(updateProductDto);
+        //============= CORRIGIR
+        // Produto retorna com id toda zerada na resposta, mas fica certo no banco
+        //============= CORRIGIR
     }
-    
+
     // Deletar Produtos por ID
     public async Task<ProductDto?> DeleteProductByIdAsync(Guid id)
     {
-        try
-        {
-            // Atribui o produto deletado a uma variável(deletedProduct)
-            var deletedProduct = await productRepository.DeleteProductByIdAsync(id);
-            // Retorna o produto ou null
-            return deletedProduct == null ? null : mapper.Map<ProductDto>(deletedProduct);
-        }
-        catch (Exception e)
-        {
-            throw new InvalidOperationException("Erro ao deletar produto.", e);
-        }
+        // Atribui o produto deletado a uma variável(deletedProduct)
+        var deletedProduct = await productRepository.DeleteProductByIdAsync(id);
+        // Retorna o produto ou null
+        return deletedProduct == null ? null : mapper.Map<ProductDto>(deletedProduct);
     }
 
     // Listar Produtos // Mudar nome para async dps
     public async Task<List<ProductDto>> GetAllProducts()
     {
-        try
-        {
-            // Atribui a lista dos produtos para a variável products
-            var products = await productRepository.GetAllProductsAsync();
-            // Retorna mapeado para Dto
-            return mapper.Map<List<ProductDto>>(products);
-        }
-        catch (Exception e)
-        {
-            throw new InvalidOperationException("Erro ao obter lista de produtos.", e);
-        }
-        
+        // Atribui a lista dos produtos para a variável products
+        var products = await productRepository.GetAllProductsAsync();
+        // Retorna mapeado para Dto
+        return mapper.Map<List<ProductDto>>(products);
     }
 
     // Encontrar Produto por ID
     public async Task<ProductDto?> GetProductByIdAsync(Guid id)
     {
-        try
-        {
-            // Procura o produto e atribui ele para a variável(foundProduct) se for encontrado
-            var foundProduct = await productRepository.GetProductByIdAsync(id);
-            // Retorna o produto encontrado ou null, mapeado pra productDto
-            return foundProduct == null ? null : mapper.Map<ProductDto>(foundProduct);
-        }
-        catch (Exception e)
-        {
-            throw new InvalidOperationException("Erro ao obter produto por ID.", e);
-        }
+        // Procura o produto e atribui ele para a variável(foundProduct) se for encontrado
+        var foundProduct = await productRepository.GetProductByIdAsync(id);
+        // Retorna o produto encontrado ou null, mapeado pra productDto
+        return foundProduct == null ? null : mapper.Map<ProductDto>(foundProduct);
     }
 }
