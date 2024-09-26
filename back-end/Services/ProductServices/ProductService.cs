@@ -13,6 +13,7 @@ public class ProductService(IMapper mapper, IProductRepository productRepository
     // Criar Produtos
     public async Task<ProductDto> CreateProductAsync(CreateProductDto createProductDto)
     {
+        // Depois colocar que o nome n pode ser numero
         // Verifica se o nome ta vazio
         if (string.IsNullOrWhiteSpace(createProductDto.Name))
         {
