@@ -51,4 +51,15 @@ public class MovementController(IMovementService movementService) : ControllerBa
 
         return Ok(movements);
     }
+
+    // Pensando se quando apagar a movimentação deverá ser apagada o movementProduct tbm
+    // DELETE - Movement
+    // DELETE - /api/movement/delete/{id}
+    [HttpGet]
+    [Route("delete/{id:Guid}")]
+    public async Task<IActionResult> DeleteMovementById([FromRoute] Guid id)
+    {
+        var deletedMovement = await movementService.DeleteMovementByIdAsync(id);
+        return Ok(deletedMovement);
+    }
 }
