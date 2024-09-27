@@ -80,7 +80,7 @@ public class MovementService(
             throw new InvalidOperationException("Movimentação não encontrada.");
         }
 
-        // Depois a movimentação deletada
+        // Depois retorna a movimentação deletada
         return await movementRepository.DeleteMovementByIdAsync(id);
     }
     
@@ -99,13 +99,13 @@ public class MovementService(
                     var movementsMonthYear = await movementRepository.GetMovementsByMonthYearAsync(month.Value, year.Value);
                     return mapper.Map<List<ExportMovementDto>>(movementsMonthYear);
                 }
-                throw new ArgumentException("Month and year must be provided for this filter type.");
+                throw new ArgumentException("Ano ou mês faltando no filtro.");
 
             case "all":
                 var movementsAll = await movementRepository.GetAllMovementsAsync();
                 return mapper.Map<List<ExportMovementDto>>(movementsAll);
             default:
-                throw new ArgumentException("Invalid filter type");
+                throw new ArgumentException("Filtro inválido");
         }
     }
 }
