@@ -6,8 +6,8 @@ public class CreateMovementDto
 {
     public PaymentType PaymentType { get; set; }
     public bool IsBlocked { get; set; }
-    public Guid UserId { get; set; } // O ID do usuário associado
-    public List<CreateMovementProductDto> Products { get; set; } // A lista de produtos
+    public Guid UserId { get; set; }
+    public List<CreateMovementProductDto> Products { get; set; }
 }
 
 public class CreateMovementProductDto

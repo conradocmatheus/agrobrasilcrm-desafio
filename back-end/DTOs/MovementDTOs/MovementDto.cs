@@ -10,7 +10,7 @@ public class MovementDto
     public PaymentType PaymentType { get; set; }
     public double TotalValue { get; set; }
     public bool IsBlocked { get; set; }
-    public List<MovementProductDto> Products { get; set; } // Lista de produtos movimentados
+    public List<MovementProductDto> Products { get; set; }
 }
 
 public class MovementProductDto
