@@ -21,7 +21,7 @@ public class MovementService(
         }
 
         double totalValue = 0;
-        
+
         // Calcula o valor total e verifica a existência dos produtos
         foreach (var product in createMovementDto.Products)
         {
@@ -45,7 +45,7 @@ public class MovementService(
                 Quantity = p.Quantity
             }).ToList()
         };
-        
+
         await movementRepository.CreateMovementAsync(movement);
         return mapper.Map<MovementDto>(movement);
     }
@@ -72,12 +72,13 @@ public class MovementService(
         {
             throw new InvalidOperationException("Movimentação não encontrada.");
         }
-        
+
         return await movementRepository.DeleteMovementByIdAsync(id);
     }
-    
+
     // Filtra as movimentações e retorna uma lista
-    public async Task<List<ExportMovementDto>> GetMovementsByFilterAsync(string filterType, int? month = null, int? year = null)
+    public async Task<List<ExportMovementDto>> GetMovementsByFilterAsync(string filterType, int? month = null,
+        int? year = null)
     {
         switch (filterType)
         {
@@ -88,9 +89,11 @@ public class MovementService(
             case "byMonthYear":
                 if (month.HasValue && year.HasValue)
                 {
-                    var movementsMonthYear = await movementRepository.GetMovementsByMonthYearAsync(month.Value, year.Value);
+                    var movementsMonthYear =
+                        await movementRepository.GetMovementsByMonthYearAsync(month.Value, year.Value);
                     return mapper.Map<List<ExportMovementDto>>(movementsMonthYear);
                 }
+
                 throw new ArgumentException("Ano ou mês faltando no filtro.");
 
             case "all":
@@ -99,5 +102,23 @@ public class MovementService(
             default:
                 throw new ArgumentException("Filtro inválido");
         }
+    }
+
+    // Soma de todas as movimentações de débito
+    public async Task<double> GetTotalValueDebitAsync()
+    {
+        return await movementRepository.GetTotalValueDebitAsync();
+    }
+
+    // Soma de todas as movimentações de crédito
+    public async Task<double> GetTotalValueCreditAsync()
+    {
+        return await movementRepository.GetTotalValueCreditAsync();
+    }
+
+    // Soma de todas as movimentações (crédito e débito)
+    public async Task<double> GetTotalValueMovementsAsync()
+    {
+        return await movementRepository.GetTotalValueMovementsAsync();
     }
 }

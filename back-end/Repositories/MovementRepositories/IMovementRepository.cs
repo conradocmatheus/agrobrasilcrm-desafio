@@ -19,4 +19,8 @@ public interface IMovementRepository
     Task<List<Movement>> GetMovementsLast30DaysAsync();
     Task<List<Movement>> GetMovementsByMonthYearAsync(int month, int year);
     Task<List<Movement>> GetAllMovementsAsync();
+
+    Task<double> GetTotalValueDebitAsync();
+    Task<double> GetTotalValueCreditAsync();
+    Task<double> GetTotalValueMovementsAsync();
 }

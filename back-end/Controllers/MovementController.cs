@@ -16,10 +16,10 @@ namespace back_end.Controllers;
 [Route("api/[controller]")]
 public class MovementController(IMovementService movementService) : ControllerBase
 {
-    // POST - Movement
-    // POST - /api/movement/post
+    // POST: /api/movement
+    // Cria uma nova movimentação
     [HttpPost]
-    [Route("post")]
+    [Route("")]
     [ValidadeModel]
     public async Task<IActionResult> CreateMovement([FromBody] CreateMovementDto createMovementDto)
     {
@@ -27,10 +27,10 @@ public class MovementController(IMovementService movementService) : ControllerBa
         return CreatedAtAction(nameof(CreateMovement), new { id = movementDto.Id }, movementDto);
     }
 
-    // GET - Movements
-    // GET - /api/movement/get-all
+    // GET: /api/movement
+    // Retorna todas as movimentações paginadas
     [HttpGet]
-    [Route("get-all")]
+    [Route("")]
     public async Task<IActionResult> GetAllMovements([FromQuery] QueryObject query)
     {
         var movements = await movementService.GetAllMovementsPaginatedAsync(query);
@@ -42,10 +42,9 @@ public class MovementController(IMovementService movementService) : ControllerBa
         return Ok(movements);
     }
 
-    // GET - Movements
-    // GET - /api/movement/get-all/by-payment-type/{paymentType}
-    [HttpGet]
-    [Route("get-all/by-payment-type/{paymentType}")]
+    // GET: /api/movement/by-payment-type/{paymentType}
+    // Retorna movimentações filtradas por tipo de pagamento (débito ou crédito)
+    [HttpGet("by-payment-type/{paymentType}")]
     public async Task<IActionResult> GetAllMovementsByPaymentType([FromRoute] PaymentType paymentType)
     {
         var movements = await movementService.GetAllMovementsByPaymentTypeAsync(paymentType);
@@ -57,18 +56,17 @@ public class MovementController(IMovementService movementService) : ControllerBa
         return Ok(movements);
     }
 
-    // DELETE - Movement
-    // DELETE - /api/movement/delete/{id}
-    [HttpDelete]
-    [Route("delete/{id:Guid}")]
+    // DELETE: /api/movement/{id}
+    // Exclui uma movimentação pelo ID
+    [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> DeleteMovementById([FromRoute] Guid id)
     {
         var deletedMovement = await movementService.DeleteMovementByIdAsync(id);
         return Ok(deletedMovement);
     }
 
-    // GET - Movements
-    // GET - /api/movement/export-csv
+    // GET: /api/movement/export-csv
+    // Exporta movimentações filtradas para CSV
     [HttpGet("export-csv")]
     public async Task<IActionResult> ExportMovements(string filterType, int? month = null, int? year = null)
     {
@@ -121,5 +119,32 @@ public class MovementController(IMovementService movementService) : ControllerBa
         var bytes = Encoding.UTF8.GetBytes(csvContent);
 
         return File(bytes, "text/csv", "movements.csv");
+    }
+    
+    // GET: /api/movement/total-debit
+    // Retorna a soma total de todas as movimentações de débito
+    [HttpGet("total-debit")]
+    public async Task<IActionResult> GetTotalDebit()
+    {
+        var totalDebit = await movementService.GetTotalValueDebitAsync();
+        return Ok(new { TotalDebit = totalDebit });
+    }
+
+    // GET: /api/movement/total-credit
+    // Retorna a soma total de todas as movimentações de crédito
+    [HttpGet("total-credit")]
+    public async Task<IActionResult> GetTotalCredit()
+    {
+        var totalCredit = await movementService.GetTotalValueCreditAsync();
+        return Ok(new { TotalCredit = totalCredit });
+    }
+
+    // GET: /api/movement/total-movements
+    // Retorna a soma total de todas as movimentações (crédito e débito)
+    [HttpGet("total-movements")]
+    public async Task<IActionResult> GetTotalMovements()
+    {
+        var totalMovements = await movementService.GetTotalValueMovementsAsync();
+        return Ok(new { TotalMovements = totalMovements });
     }
 }

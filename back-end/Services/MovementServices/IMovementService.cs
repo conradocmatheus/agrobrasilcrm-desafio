@@ -13,4 +13,8 @@ public interface IMovementService
     Task<Movement?> DeleteMovementByIdAsync(Guid id);
 
     Task<List<ExportMovementDto>> GetMovementsByFilterAsync(string filterType, int? month = null, int? year = null);
+
+    Task<double> GetTotalValueDebitAsync();
+    Task<double> GetTotalValueCreditAsync();
+    Task<double> GetTotalValueMovementsAsync();
 }

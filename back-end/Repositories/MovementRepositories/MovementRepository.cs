@@ -129,4 +129,28 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
             .AsNoTracking()
             .ToListAsync();
     }
+    
+
+    // Soma de todas as movimentações do tipo débito e retorna um double
+    public async Task<double> GetTotalValueDebitAsync()
+    {
+        return await context.Movements
+            .Where(m => m.PaymentType == PaymentType.Debit)
+            .SumAsync(m => m.TotalValue);
+    }
+
+    // Soma de todas as movimentações do tipo crédito e retorna um double
+    public async Task<double> GetTotalValueCreditAsync()
+    {
+        return await context.Movements
+            .Where(m => m.PaymentType == PaymentType.Credit)
+            .SumAsync(m => m.TotalValue);
+    }
+    
+    // Soma de todas as movimentações (crédito e débito) e retorna um double
+    public async Task<double> GetTotalValueMovementsAsync()
+    {
+        return await context.Movements
+            .SumAsync(m => m.TotalValue);
+    }
 }
