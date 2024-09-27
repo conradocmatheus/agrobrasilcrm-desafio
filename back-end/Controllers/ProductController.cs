@@ -18,10 +18,8 @@ public class ProductController(IProductService productService) : ControllerBase
     [Route("post")]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
     {
-        // Chama o método do productService para criar o product
         var productDto = await productService.CreateProductAsync(createProductDto);
-
-        // Retorna 201 se der certo
+        
         return CreatedAtAction(nameof(GetProductById), new { id = productDto.Id }, productDto);
     }
 
@@ -49,7 +47,6 @@ public class ProductController(IProductService productService) : ControllerBase
     [Route("delete/{id:Guid}")]
     public async Task<IActionResult> DeleteProductById([FromRoute] Guid id)
     {
-        // Atribui o produto deletado pra deletedProduct
         var deletedProduct = await productService.DeleteProductByIdAsync(id);
 
         if (deletedProduct == null)
@@ -66,9 +63,8 @@ public class ProductController(IProductService productService) : ControllerBase
     [Route("get-all")]
     public async Task<IActionResult> GetAllProducts()
     {
-        // Atribui a lista de produtos pra productDto
         var productDto = await productService.GetAllProductsAsync();
-        // Verifica se tem produto na lista
+        
         if (productDto.Count == 0)
         {
             return NotFound("Nenhum produto encontrado");
@@ -83,9 +79,8 @@ public class ProductController(IProductService productService) : ControllerBase
     [Route("{id:Guid}")]
     public async Task<IActionResult> GetProductById(Guid id)
     {
-        // Atribui o produto encontrado pra selectedProduct
         var selectedProduct = await productService.GetProductByIdAsync(id);
-        // Verifica se o produto foi encontrado
+        
         if (selectedProduct == null)
         {
             return NotFound($"Produto com ID {id} nao foi encontrado");

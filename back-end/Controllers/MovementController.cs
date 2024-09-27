@@ -23,9 +23,7 @@ public class MovementController(IMovementService movementService) : ControllerBa
     [ValidadeModel]
     public async Task<IActionResult> CreateMovement([FromBody] CreateMovementDto createMovementDto)
     {
-        // Chama o serviço para criar a movimentação
         var movementDto = await movementService.CreateMovementAsync(createMovementDto);
-        // Retorna o status 201 com o resultado
         return CreatedAtAction(nameof(CreateMovement), new { id = movementDto.Id }, movementDto);
     }
 

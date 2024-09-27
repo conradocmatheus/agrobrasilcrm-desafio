@@ -6,30 +6,30 @@ namespace back_end.Middlewares;
 public class ErrorHandlerMiddleware(RequestDelegate next)
 {
     
-    // Recebe o contexto da solicitação
+    // Processa a requisição e lida com exceções
     public async Task Invoke(HttpContext context)
     {
         try
         {
-            // tenta executar o próximo middleware
+            // Executa o próximo middleware
             await next(context);
         }
         catch (Exception e)
         {
-            // se nao, lança exceção personalizada
+            // Lida com exceções e envia resposta customizada
             await HandleExceptionAsync(context, e);
         }
     }
 
     private static Task HandleExceptionAsync(HttpContext context, Exception e)
     {
-        // Definição da resposta que sera em json
+        // Define o tipo de resposta como JSON
         var response = context.Response;
         response.ContentType = "application/json";
         
         response.StatusCode = e switch
         {
-            // Seta o StatusCode de acordo com a exceção lançada
+            // Define o StatusCode com base no tipo da exceção
             DbUpdateException => 400,
             ArgumentNullException => 400,
             ArgumentException => 400,
@@ -38,7 +38,7 @@ public class ErrorHandlerMiddleware(RequestDelegate next)
             
         };
 
-        // Cria a resposta do json e serializa pro json
+        // Serializa a mensagem da exceção em JSON
         var result = JsonSerializer.Serialize(new { message = e.Message });
         return response.WriteAsync(result);
     }

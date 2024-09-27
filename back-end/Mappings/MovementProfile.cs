@@ -10,7 +10,7 @@ public class MovementProfile : Profile
     {
         // Mapeamento de CreateMovementDto para Movement
         CreateMap<CreateMovementDto, Movement>()
-            .ForMember(dest => dest.MovementProducts, opt => opt.Ignore()); // Produtos serão mapeados separadamente
+            .ForMember(dest => dest.MovementProducts, opt => opt.Ignore());
 
         // Mapeamento de Movement para MovementDto
         CreateMap<Movement, MovementDto>()

@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Controllers;
 
-// Mudar ordem para melhor organizacao dps
-// Melhorar os catchs, retorno errado
 [ApiController]
 [Route("api/[controller]")]
 public class UserController(IUserService userService) : ControllerBase
@@ -18,10 +16,8 @@ public class UserController(IUserService userService) : ControllerBase
     [Route("post")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
     {
-        // Chama o método do UserService pra criar o usuário
         var userDto = await userService.CreateUserAsync(createUserDto);
-
-        // Retorna 201 se der certo
+        
         return CreatedAtAction(nameof(GetUserById), new { id = userDto.Id }, userDto);
     }
     
@@ -36,7 +32,7 @@ public class UserController(IUserService userService) : ControllerBase
 
         if (userDto == null)
         {
-            return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
+            return NotFound($"Usuário com ID {id} não encontrado.");
         }
 
         return Ok(userDto);
@@ -48,12 +44,11 @@ public class UserController(IUserService userService) : ControllerBase
     [Route("delete/by-id/{id:Guid}")]
     public async Task<IActionResult> DeleteUserById([FromRoute] Guid id)
     {
-        // Atribui o usuário deletado pra deletedUser
         var deletedUser = await userService.DeleteUserByIdAsync(id);
 
         if (deletedUser == null)
         {
-            return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
+            return NotFound($"Usuário com ID {id} não encontrado.");
         }
 
         return Ok(deletedUser);
@@ -65,9 +60,8 @@ public class UserController(IUserService userService) : ControllerBase
     [Route("get/by-creation-date")]
     public async Task<IActionResult> GetUsersByCreatedAt()
     {
-        // Atribui a lista de usuarios pra userCreatedAtDto
         var userCreatedAtDto = await userService.GetUsersByCreatedAtAsync();
-        // Verifica se tem algum usuário na lista
+        
         if (userCreatedAtDto.Count == 0)
         {
             return NotFound("Nenhum usuário foi encontrado");
@@ -82,9 +76,8 @@ public class UserController(IUserService userService) : ControllerBase
     [Route("get/by-id/{id:Guid}")]
     public async Task<IActionResult> GetUserById([FromRoute] Guid id)
     {
-        // Atribui o usuário encontrado pra selectedUser
         var selectedUser = await userService.GetUserByIdAsync(id);
-        // Verifica se o usuário foi encontrado
+        
         if (selectedUser == null)
         {
             return NotFound($"Usuário com ID {id} não foi encontrado");
