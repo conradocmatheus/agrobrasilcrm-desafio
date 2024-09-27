@@ -48,8 +48,8 @@ public class ProductService(IMapper mapper, IProductRepository productRepository
         return deletedProduct == null ? null : mapper.Map<ProductDto>(deletedProduct);
     }
 
-    // Listar Produtos // Mudar nome para async dps
-    public async Task<List<ProductDto>> GetAllProducts()
+    // Listar Produtos
+    public async Task<List<ProductDto>> GetAllProductsAsync()
     {
         // Atribui a lista dos produtos para a variável products
         var products = await productRepository.GetAllProductsAsync();

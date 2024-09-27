@@ -67,7 +67,7 @@ public class ProductController(IProductService productService) : ControllerBase
     public async Task<IActionResult> GetAllProducts()
     {
         // Atribui a lista de produtos pra productDto
-        var productDto = await productService.GetAllProducts();
+        var productDto = await productService.GetAllProductsAsync();
         // Verifica se tem produto na lista
         if (productDto.Count == 0)
         {
