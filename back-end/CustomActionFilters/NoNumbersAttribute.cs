@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace back_end.CustomActionFilters;
 
+// Tenho que mudar isso, acho q vou permitir ter números
 public class NoNumbersAttribute: ValidationAttribute
 {
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
