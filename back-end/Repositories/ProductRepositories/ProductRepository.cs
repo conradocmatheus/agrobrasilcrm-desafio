@@ -27,7 +27,7 @@ public class ProductRepository(AppDbContext context) : IProductRepository
 
         if (toUpdateProduct == null)
         {
-            return null; // Retorno null se não encontrar o produto com o id
+            return null;
         }
 
         // Atualiza as propriedades
@@ -36,7 +36,7 @@ public class ProductRepository(AppDbContext context) : IProductRepository
         toUpdateProduct.Quantity = product.Quantity;
 
         await context.SaveChangesAsync();
-        return toUpdateProduct; // Retorna o produto atualizado
+        return toUpdateProduct;
     }
 
     // Deleta produto por ID
