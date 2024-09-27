@@ -7,6 +7,7 @@ using back_end.Helpers;
 using back_end.Models.Enums;
 using back_end.Services.MovementServices;
 using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Controllers;
@@ -72,10 +73,18 @@ public class MovementController(IMovementService movementService) : ControllerBa
     public async Task<IActionResult> ExportMovements(string filterType, int? month = null, int? year = null)
     {
         var movements = await movementService.GetMovementsByFilterAsync(filterType, month, year);
+
+        var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            Delimiter = ";",
+            HasHeaderRecord = true,
+            Quote = '"',
+            Encoding = Encoding.UTF8,
+        };
         
         // Usa CsvHelper para criar o CSV diretamente no método
         await using var writer = new StringWriter();
-        await using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
+        await using var csvWriter = new CsvWriter(writer, csvConfig);
         // Escreve os registros da lista movements diretamente no CSV
         await csvWriter.WriteRecordsAsync((IEnumerable)movements);
 
