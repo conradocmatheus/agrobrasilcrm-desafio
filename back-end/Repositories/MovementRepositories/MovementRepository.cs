@@ -98,7 +98,10 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
     {
         var thirtyDaysAgo = DateTime.UtcNow.AddDays(-30);
 
-        return await context.Movements
+        return await context.Movements.Include(m => m.User)
+            .Include(m => m.User)
+            .Include(m => m.MovementProducts)
+            .ThenInclude(mp => mp.Product)
             .Where(movement => movement.CreatedAt >= thirtyDaysAgo)
             .OrderBy(movement => movement.CreatedAt)
             .AsNoTracking()
@@ -112,7 +115,10 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
         var startDate = new DateTime(year, month, 1);
         var endDate = startDate.AddMonths(1).AddDays(-1);
 
-        return await context.Movements
+        return await context.Movements.Include(m => m.User)
+            .Include(m => m.User)
+            .Include(m => m.MovementProducts)
+            .ThenInclude(mp => mp.Product)
             .Where(movement => movement.CreatedAt >= startDate && movement.CreatedAt <= endDate)
             .OrderBy(movement => movement.CreatedAt)
             .AsNoTracking()
@@ -122,6 +128,11 @@ public class MovementRepository(AppDbContext context) : IMovementRepository
     // Pega todas as movimentações e retorna uma lista
     public async Task<List<Movement>> GetAllMovementsAsync()
     {
-        return await context.Movements.ToListAsync();
+        return await context.Movements.Include(m => m.User)
+            .Include(m => m.User)
+            .Include(m => m.MovementProducts)
+            .ThenInclude(mp => mp.Product)
+            .AsNoTracking()
+            .ToListAsync();
     }
 }

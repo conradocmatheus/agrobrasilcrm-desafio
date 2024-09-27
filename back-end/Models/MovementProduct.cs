@@ -8,7 +8,6 @@ public class MovementProduct
 
         public Guid ProductId { get; set; }
         public Product Product { get; set; }
-
-        // Você pode adicionar propriedades adicionais, se necessário
+        
         public int Quantity { get; set; }
 }

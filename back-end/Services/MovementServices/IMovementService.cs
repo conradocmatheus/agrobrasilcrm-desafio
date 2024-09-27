@@ -12,6 +12,5 @@ public interface IMovementService
     Task<List<GetAllMovementsDto>> GetAllMovementsByPaymentTypeAsync(PaymentType paymentType);
     Task<Movement?> DeleteMovementByIdAsync(Guid id);
 
-    Task<List<Movement>> GetMovementsByFilterAsync(string filterType, int? month = null, int? year = null);
-
+    Task<List<ExportMovementDto>> GetMovementsByFilterAsync(string filterType, int? month = null, int? year = null);
 }

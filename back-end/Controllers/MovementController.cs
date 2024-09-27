@@ -58,7 +58,7 @@ public class MovementController(IMovementService movementService) : ControllerBa
 
         return Ok(movements);
     }
-    
+
     // DELETE - Movement
     // DELETE - /api/movement/delete/{id}
     [HttpDelete]
@@ -68,12 +68,15 @@ public class MovementController(IMovementService movementService) : ControllerBa
         var deletedMovement = await movementService.DeleteMovementByIdAsync(id);
         return Ok(deletedMovement);
     }
-    
-    [HttpGet("export")]
+
+    // GET - Movements
+    // GET - /api/movement/export-csv
+    [HttpGet("export-csv")]
     public async Task<IActionResult> ExportMovements(string filterType, int? month = null, int? year = null)
     {
         var movements = await movementService.GetMovementsByFilterAsync(filterType, month, year);
 
+        // Formatação da tabela
         var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
             Delimiter = ";",
@@ -81,18 +84,44 @@ public class MovementController(IMovementService movementService) : ControllerBa
             Quote = '"',
             Encoding = Encoding.UTF8,
         };
-        
-        // Usa CsvHelper para criar o CSV diretamente no método
+
         await using var writer = new StringWriter();
         await using var csvWriter = new CsvWriter(writer, csvConfig);
-        // Escreve os registros da lista movements diretamente no CSV
-        await csvWriter.WriteRecordsAsync((IEnumerable)movements);
 
-        // Converte o resultado do CSV para um array de bytes
+        // Escreve o nome dos campos manualmente
+        csvWriter.WriteField("ID");
+        csvWriter.WriteField("payment_type");
+        csvWriter.WriteField("total_value");
+        csvWriter.WriteField("is_blocked");
+        csvWriter.WriteField("created_at");
+        csvWriter.WriteField("user_ID");
+        csvWriter.WriteField("user_name");
+        csvWriter.WriteField("product_ID");
+        csvWriter.WriteField("product_name");
+        await csvWriter.NextRecordAsync();
+
+        // For para escrever cada movimentação no arquivo
+        foreach (var movement in movements)
+        {
+            var productId = string.Join(", ", movement.Products.Select(p => p.ProductId));
+            var productName = string.Join(", ", movement.Products.Select(p => p.ProductName));
+            
+            // Escreve os campos no arquivo
+            csvWriter.WriteField(movement.Id);
+            csvWriter.WriteField(movement.PaymentType);
+            csvWriter.WriteField(movement.TotalValue);
+            csvWriter.WriteField(movement.IsBlocked);
+            csvWriter.WriteField(movement.CreatedAt);
+            csvWriter.WriteField(movement.UserId);
+            csvWriter.WriteField(movement.UserName);
+            csvWriter.WriteField(productId);
+            csvWriter.WriteField(productName);
+            await csvWriter.NextRecordAsync();
+        }
+
         var csvContent = writer.ToString();
         var bytes = Encoding.UTF8.GetBytes(csvContent);
 
-        // Retorna o arquivo CSV
         return File(bytes, "text/csv", "movements.csv");
     }
 }

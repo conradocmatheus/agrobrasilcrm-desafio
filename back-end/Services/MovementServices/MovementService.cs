@@ -84,22 +84,26 @@ public class MovementService(
         return await movementRepository.DeleteMovementByIdAsync(id);
     }
     
-    public async Task<List<Movement>> GetMovementsByFilterAsync(string filterType, int? month = null, int? year = null)
+    // Filtra as movimentações e retorna uma lista
+    public async Task<List<ExportMovementDto>> GetMovementsByFilterAsync(string filterType, int? month = null, int? year = null)
     {
         switch (filterType)
         {
             case "last30days":
-                return await movementRepository.GetMovementsLast30DaysAsync();
+                var movements30days = await movementRepository.GetMovementsLast30DaysAsync();
+                return mapper.Map<List<ExportMovementDto>>(movements30days);
 
             case "byMonthYear":
                 if (month.HasValue && year.HasValue)
                 {
-                    return await movementRepository.GetMovementsByMonthYearAsync(month.Value, year.Value);
+                    var movementsMonthYear = await movementRepository.GetMovementsByMonthYearAsync(month.Value, year.Value);
+                    return mapper.Map<List<ExportMovementDto>>(movementsMonthYear);
                 }
                 throw new ArgumentException("Month and year must be provided for this filter type.");
 
             case "all":
-                return await movementRepository.GetAllMovementsAsync();
+                var movementsAll = await movementRepository.GetAllMovementsAsync();
+                return mapper.Map<List<ExportMovementDto>>(movementsAll);
             default:
                 throw new ArgumentException("Invalid filter type");
         }
