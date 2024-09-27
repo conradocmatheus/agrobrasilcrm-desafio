@@ -58,7 +58,7 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
             throw new InvalidOperationException("Usuário não encontrado.");
         }
 
-        // Se o Usuario tiver feito alguma movimentacao, ele nao podera ser deletado
+        // Se o Usuário tiver feito alguma movimentação, ele não poderá ser deletado
         if (user.Movements == null || user.Movements.Count > 0)
         {
             throw new InvalidOperationException("Usuário não pode ser deletado porque possui movimentações.");
