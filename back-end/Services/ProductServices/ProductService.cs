@@ -26,17 +26,24 @@ public class ProductService(IMapper mapper, IProductRepository productRepository
     // Atualizar Produtos por ID
     public async Task<ProductDto?> UpdateProductAsync(UpdateProductDto updateProductDto, Guid id)
     {
-        // Faz o mapeamento de updateProductDto pra Product
-        var toUpdateProduct = mapper.Map<Product>(updateProductDto);
+        
+        // Busca o produto antes do update por id do banco
+        var existingProduct = await productRepository.GetProductByIdAsync(id);
 
+        if (existingProduct == null)
+        {
+            return null;
+        }
+        mapper.Map(updateProductDto, existingProduct);
+        
         // Chama o update do repositório
-        await productRepository.UpdateProductAsync(toUpdateProduct, id);
+        await productRepository.UpdateProductAsync(existingProduct, id);
 
-        // E Retorna o produto mapeado
-        return mapper.Map<ProductDto>(updateProductDto);
-        //============= CORRIGIR
-        // Produto retorna com id toda zerada na resposta, mas fica certo no banco
-        //============= CORRIGIR
+        // Busca o produto atualizado
+        var updatedProduct = await productRepository.GetProductByIdAsync(id);
+
+        // Retorna o produto atualizado mapeado para ProductDto
+        return mapper.Map<ProductDto>(updatedProduct);
     }
 
     // Deletar Produtos por ID
