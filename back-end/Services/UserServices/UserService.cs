@@ -12,45 +12,32 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
     // Criar usuário
     public async Task<UserDto> CreateUserAsync(CreateUserDto createUserDto)
     {
-        // Verifica se o usuário é maior de idade
         if (!IsAdult(createUserDto.Birthday))
         {
             throw new ArgumentException("Usuário deve ser maior de 18 anos.");
         }
 
-        // Mapeia o CreateUserDto para User
         var user = mapper.Map<User>(createUserDto);
-
-        // Chama o repositório que salva o usuário no banco de dados
         await userRepository.CreateUserAsync(user);
-
-        // Retorna o UserDto mapeado de user
         return mapper.Map<UserDto>(user);
     }
 
     // Atualizar usuário por ID
     public async Task<UserDto?> UpdateUserAsync(CreateUserDto createUserDto, Guid id)
     {
-        // Verifica se o usuário é maior de idade
         if (!IsAdult(createUserDto.Birthday))
         {
             throw new ArgumentException("Usuário deve ser maior de 18 anos.");
         }
 
-        // Mapeia de createUserDto pra User
         var toUpdateUser = mapper.Map<User>(createUserDto);
-
-        // Atualiza toUpdateUser com o id fornecido
         var updatedUser = await userRepository.UpdateUserAsync(toUpdateUser, id);
-
-        // Verifica se o usuário foi atualizado e retorna
         return updatedUser == null ? null : mapper.Map<UserDto>(updatedUser);
     }
 
     // Deletar usuário por ID
     public async Task<UserDto?> DeleteUserByIdAsync(Guid id)
     {
-        // Atribui o usuário encontrado por id na variável user
         var user = await userRepository.GetUserByIdAsync(id);
 
         if (user == null)
@@ -63,10 +50,8 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
         {
             throw new InvalidOperationException("Usuário não pode ser deletado porque possui movimentações.");
         }
-
-        // Atribui o usuário que passou pelas verificações uma variável(deletedUser)
+        
         var deletedUser = await userRepository.DeleteUserByIdAsync(id);
-        // Retorna o usuário deletado ou null, no formato de UserDto
         return mapper.Map<UserDto>(deletedUser);
     }
 
@@ -74,18 +59,14 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
     // Listar por data de criação
     public async Task<List<UserCreatedAtDto>> GetUsersByCreatedAtAsync()
     {
-        // Atribui a lista que o método do repository retorna em uma var users
         var users = await userRepository.GetUsersByCreatedAtAsync();
-        // E dps retorna a lista dos objetos user mapeados para Dto
         return mapper.Map<List<UserCreatedAtDto>>(users);
     }
 
     // Encontrar usuário por ID
     public async Task<UserDto?> GetUserByIdAsync(Guid id)
     {
-        // Atribui o usuário encontrado por id a uma variável(foundUser)
         var foundUser = await userRepository.GetUserByIdAsync(id);
-        // Retorna o usuário encontrado ou null, no formato de UserDto
         return foundUser == null ? null : mapper.Map<UserDto>(foundUser);
     }
 

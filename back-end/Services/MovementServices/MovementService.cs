@@ -15,7 +15,6 @@ public class MovementService(
     // Criar movimentação
     public async Task<MovementDto> CreateMovementAsync(CreateMovementDto createMovementDto)
     {
-        // Verifica se o usuário existe
         if (!await movementRepository.UserExistsAsync(createMovementDto.UserId))
         {
             throw new Exception("Usuário com esse id não encontrado.");
@@ -46,20 +45,15 @@ public class MovementService(
                 Quantity = p.Quantity
             }).ToList()
         };
-
-        // Chama o método para criar a movimentação
+        
         await movementRepository.CreateMovementAsync(movement);
-
-        // Retorna a movimentação criada para MovementDto
         return mapper.Map<MovementDto>(movement);
     }
 
     // Listar movimentações
     public async Task<List<GetAllMovementsWithUserInfoDto>> GetAllMovementsPaginatedAsync(QueryObject query)
     {
-        // Atribui a lista que o método do repository retorna em uma var movements
         var movements = await movementRepository.GetAllMovementsPaginatedAsync(query);
-        // Retorna a lista com os objetos mapeados para DTO
         return mapper.Map<List<GetAllMovementsWithUserInfoDto>>(movements);
     }
 
@@ -73,14 +67,12 @@ public class MovementService(
     // Deletar uma movimentação por ID
     public async Task<Movement?> DeleteMovementByIdAsync(Guid id)
     {
-        // Primeiro procura a movimentação por id pra ver se ela existe
         var movement = await movementRepository.GetMovementByIdAsync(id);
         if (movement == null)
         {
             throw new InvalidOperationException("Movimentação não encontrada.");
         }
-
-        // Depois retorna a movimentação deletada
+        
         return await movementRepository.DeleteMovementByIdAsync(id);
     }
     
