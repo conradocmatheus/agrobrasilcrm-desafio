@@ -20,21 +20,33 @@ public class MovementProfile : Profile
                     Id = mp.ProductId,
                     Quantity = mp.Quantity
                 }).ToList()));
-        
+
         // Mapeamento de MovementProduct para MovementProductDto
         CreateMap<MovementProduct, MovementProductDto>();
-        
+
         // Mapping pro GetAllMovements
         CreateMap<Movement, GetAllMovementsDto>()
-            .ForMember(dest => dest.MovementProductIds, opt => opt.MapFrom(src => src.MovementProducts.Select(mp => mp.ProductId)))
+            .ForMember(dest => dest.MovementProductIds,
+                opt => opt.MapFrom(src => src.MovementProducts.Select(mp => mp.ProductId)))
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId));
         
-        // Teste
         CreateMap<Movement, GetAllMovementsWithUserInfoDto>()
-            .ForMember(dest => dest.MovementProductIds, opt => opt.MapFrom(src => src.MovementProducts.Select(mp => mp.ProductId)))
+            .ForMember(dest => dest.MovementProductIds,
+                opt => opt.MapFrom(src => src.MovementProducts.Select(mp => mp.ProductId)))
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
-            .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User)); // Mapeia o User
+            .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User));
         
-        CreateMap<User, UserInfoDto>(); // Mapeia as informações do usuário
+        // Mapping pro UserInfoDto
+        CreateMap<User, UserInfoDto>();
+        
+        // Mapping pro ExportMovementDto
+        CreateMap<Movement, ExportMovementDto>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Name))
+            .ForMember(dest => dest.Products, opt => opt.MapFrom(src =>
+                src.MovementProducts.Select(mp => new ExportMovementDto.ProductExportDto
+                {
+                    ProductId = mp.Product.Id,
+                    ProductName = mp.Product.Name
+                }).ToList()));
     }
 }
