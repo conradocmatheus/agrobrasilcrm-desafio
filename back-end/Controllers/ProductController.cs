@@ -11,11 +11,11 @@ namespace back_end.Controllers;
 [Route("api/[controller]")]
 public class ProductController(IProductService productService) : ControllerBase
 {
-    // POST - Product
-    // POST - /api/product/post
+    // POST: /api/product
+    // Cria um novo produto
     [HttpPost]
     [ValidadeModel]
-    [Route("post")]
+    [Route("")]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto createProductDto)
     {
         var productDto = await productService.CreateProductAsync(createProductDto);
@@ -23,11 +23,11 @@ public class ProductController(IProductService productService) : ControllerBase
         return CreatedAtAction(nameof(GetProductById), new { id = productDto.Id }, productDto);
     }
 
-    // PUT - Product by id
-    // PUT - /api/product/update/{id}
+    // PUT: /api/product/{id}
+    // Atualiza um produto por ID
     [HttpPut]
     [ValidadeModel]
-    [Route("update/{id:Guid}")]
+    [Route("{id:Guid}")]
     public async Task<IActionResult> UpdateProductById([FromBody] UpdateProductDto updateProductDto,
         [FromRoute] Guid id)
     {
@@ -35,32 +35,32 @@ public class ProductController(IProductService productService) : ControllerBase
 
         if (productDto == null)
         {
-            return NotFound($"Produto com  ID {id} nao encontrado"); // Retorna notFound se não encontrado
+            return NotFound($"Produto com  ID {id} nao encontrado");
         }
 
         return Ok(productDto);
     }
 
-    // DELETE - Product by id
-    // DELETE - /api/product/delete/{id}
+    // DELETE: /api/product/{id}
+    // Apaga um produto por ID
     [HttpDelete]
-    [Route("delete/{id:Guid}")]
+    [Route("{id:Guid}")]
     public async Task<IActionResult> DeleteProductById([FromRoute] Guid id)
     {
         var deletedProduct = await productService.DeleteProductByIdAsync(id);
 
         if (deletedProduct == null)
         {
-            return NotFound($"Produto com ID {id} nao encontrado."); // Retorna notFound se não encontrado
+            return NotFound($"Produto com ID {id} nao encontrado.");
         }
 
         return Ok(deletedProduct);
     }
 
-    // GET - Products
-    // GET - /api/product/get-all
+    // GET: /api/product
+    // Retorna todos os produtos
     [HttpGet]
-    [Route("get-all")]
+    [Route("")]
     public async Task<IActionResult> GetAllProducts()
     {
         var productDto = await productService.GetAllProductsAsync();
@@ -73,8 +73,8 @@ public class ProductController(IProductService productService) : ControllerBase
         return Ok(productDto);
     }
 
-    // GET - Products by id
-    // GET - /api/product/{id}
+    // GET: /api/product/{id}
+    // Retorna um produto por ID 
     [HttpGet]
     [Route("{id:Guid}")]
     public async Task<IActionResult> GetProductById(Guid id)

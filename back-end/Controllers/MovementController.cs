@@ -42,9 +42,9 @@ public class MovementController(IMovementService movementService) : ControllerBa
         return Ok(movements);
     }
 
-    // GET: /api/movement/by-payment-type/{paymentType}
+    // GET: /api/movement/{paymentType}
     // Retorna movimentações filtradas por tipo de pagamento (débito ou crédito)
-    [HttpGet("by-payment-type/{paymentType}")]
+    [HttpGet("{paymentType}")]
     public async Task<IActionResult> GetAllMovementsByPaymentType([FromRoute] PaymentType paymentType)
     {
         var movements = await movementService.GetAllMovementsByPaymentTypeAsync(paymentType);

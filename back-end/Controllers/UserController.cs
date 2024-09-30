@@ -9,11 +9,11 @@ namespace back_end.Controllers;
 [Route("api/[controller]")]
 public class UserController(IUserService userService) : ControllerBase
 {
-    // POST - User
-    // POST - /api/user
+    // POST: /api/user
+    // Cria um novo usuário
     [HttpPost]
     [ValidadeModel]
-    [Route("post")]
+    [Route("")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
     {
         var userDto = await userService.CreateUserAsync(createUserDto);
@@ -21,11 +21,11 @@ public class UserController(IUserService userService) : ControllerBase
         return CreatedAtAction(nameof(GetUserById), new { id = userDto.Id }, userDto);
     }
     
-    // Update - User by id
-    // Update - /api/user/by-id
+    // PUT: /api/user/{id}
+    // Atualiza um usuário por ID
     [HttpPut]
     [ValidadeModel]
-    [Route("update/by-id/{id:Guid}")]
+    [Route("{id:Guid}")]
     public async Task<IActionResult> UpdateUserById([FromBody] CreateUserDto createUserDto, [FromRoute] Guid id)
     {
         var userDto = await userService.UpdateUserAsync(createUserDto, id);
@@ -38,10 +38,10 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(userDto);
     }
 
-    // Delete - User by id
-    // Delete - /api/user/by-id
+    // DELETE: /api/user/{id}
+    // Apaga um usuário por ID
     [HttpDelete]
-    [Route("delete/by-id/{id:Guid}")]
+    [Route("{id:Guid}")]
     public async Task<IActionResult> DeleteUserById([FromRoute] Guid id)
     {
         var deletedUser = await userService.DeleteUserByIdAsync(id);
@@ -54,10 +54,10 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(deletedUser);
     }
 
-    // GET - Users
-    // GET - /api/user/by-creation-date
+    // GET: /api/user/by-creation-date
+    // Retorna os usuários em ordem de criação 
     [HttpGet]
-    [Route("get/by-creation-date")]
+    [Route("by-creation-date")]
     public async Task<IActionResult> GetUsersByCreatedAt()
     {
         var userCreatedAtDto = await userService.GetUsersByCreatedAtAsync();
@@ -70,10 +70,10 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(userCreatedAtDto);
     }
 
-    // GET - User by id
-    // GET - /api/user/by-id
+    // GET: /api/user/{id}
+    // Retorna um usuário buscado por ID
     [HttpGet]
-    [Route("get/by-id/{id:Guid}")]
+    [Route("{id:Guid}")]
     public async Task<IActionResult> GetUserById([FromRoute] Guid id)
     {
         var selectedUser = await userService.GetUserByIdAsync(id);
