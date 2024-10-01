@@ -30,9 +30,9 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DesafioConnectionString"), sqlOptions =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("ConnectionString"), npgsqlOptions =>
             {
-                sqlOptions.EnableRetryOnFailure();
+                npgsqlOptions.EnableRetryOnFailure();
             }));
         builder.Services.AddAutoMapper(typeof(Program));
         
