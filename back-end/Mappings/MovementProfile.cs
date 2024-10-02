@@ -18,7 +18,9 @@ public class MovementProfile : Profile
                 src.MovementProducts.Select(mp => new MovementProductDto
                 {
                     Id = mp.ProductId,
-                    Quantity = mp.Quantity
+                    Name = mp.Product.Name,
+                    Quantity = mp.Quantity,
+                    Price = mp.Product.Price
                 }).ToList()));
 
         // Mapeamento de MovementProduct para MovementProductDto
