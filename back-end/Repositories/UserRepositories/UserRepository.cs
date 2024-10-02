@@ -18,25 +18,6 @@ public class UserRepository(AppDbContext context) : IUserRepository
         return user;
     }
 
-    // Atualiza um usuário no banco por ID
-    public async Task<User?> UpdateUserAsync(User user, Guid id)
-    {
-        var toUpdateUser = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
-
-        if (toUpdateUser == null)
-        {
-            return null;
-        }
-        
-        toUpdateUser.Name = user.Name;
-        toUpdateUser.Email = user.Email;
-        toUpdateUser.Birthday = user.Birthday;
-        toUpdateUser.UpdatedAt = DateTime.Now;
-
-        await context.SaveChangesAsync();
-        return toUpdateUser;
-    }
-
     // Deleta um usuário no banco por ID
     public async Task<User?> DeleteUserByIdAsync(Guid id)
     {
@@ -56,7 +37,7 @@ public class UserRepository(AppDbContext context) : IUserRepository
     public async Task<List<User>> GetUsersByCreatedAtAsync()
     {
         return await context.Users
-            .OrderBy(user => user.CreatedAt)
+            .OrderByDescending(user => user.CreatedAt)
             .AsNoTracking()
             .ToListAsync();
     }

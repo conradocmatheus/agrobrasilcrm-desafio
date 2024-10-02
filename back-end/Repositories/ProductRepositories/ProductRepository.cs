@@ -16,24 +16,6 @@ public class ProductRepository(AppDbContext context) : IProductRepository
         return product;
     }
 
-    // Atualiza um produto no banco
-    public async Task<Product?> UpdateProductAsync(Product product, Guid id)
-    {
-        var toUpdateProduct = await context.Products.FirstOrDefaultAsync(x => x.Id == id);
-
-        if (toUpdateProduct == null)
-        {
-            return null;
-        }
-        
-        toUpdateProduct.Name = product.Name;
-        toUpdateProduct.Price = product.Price;
-        toUpdateProduct.Quantity = product.Quantity;
-
-        await context.SaveChangesAsync();
-        return toUpdateProduct;
-    }
-
     // Deleta um produto por ID
     public async Task<Product?> DeleteProductByIdAsync(Guid id)
     {
@@ -59,5 +41,20 @@ public class ProductRepository(AppDbContext context) : IProductRepository
     public async Task<Product?> GetProductByIdAsync(Guid id)
     {
         return await context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    // Busca a quantidade de um produto por ID
+    public async Task<int> GetProductQuantityByIdAsync(Guid id)
+    {
+        var product = await context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        return product.Quantity;
+    }
+
+    // Subtrai a quantidade de um produto
+    public async Task SubtractProductQuantityAsync(Guid id, int quantity)
+    {
+        var product = await context.Products.FindAsync(id);
+        product.Quantity -= quantity;
+        await context.SaveChangesAsync();
     }
 }

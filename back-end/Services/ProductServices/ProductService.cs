@@ -18,22 +18,6 @@ public class ProductService(IMapper mapper, IProductRepository productRepository
         return mapper.Map<ProductDto>(product);
     }
 
-    // Atualizar Produtos por ID
-    public async Task<ProductDto?> UpdateProductAsync(UpdateProductDto updateProductDto, Guid id)
-    {
-        var existingProduct = await productRepository.GetProductByIdAsync(id);
-
-        if (existingProduct == null)
-        {
-            return null;
-        }
-        mapper.Map(updateProductDto, existingProduct);
-        
-        await productRepository.UpdateProductAsync(existingProduct, id);
-        var updatedProduct = await productRepository.GetProductByIdAsync(id);
-        return mapper.Map<ProductDto>(updatedProduct);
-    }
-
     // Deletar Produtos por ID
     public async Task<ProductDto?> DeleteProductByIdAsync(Guid id)
     {
