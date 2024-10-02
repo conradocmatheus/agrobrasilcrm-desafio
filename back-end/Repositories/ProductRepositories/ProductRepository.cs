@@ -42,4 +42,10 @@ public class ProductRepository(AppDbContext context) : IProductRepository
     {
         return await context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
+
+    public async Task<int> GetProductQuantityByIdAsync(Guid id)
+    {
+        var product = await context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        return product.Quantity;
+    }
 }
