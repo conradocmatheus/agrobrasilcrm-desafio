@@ -48,4 +48,10 @@ public class ProductRepository(AppDbContext context) : IProductRepository
         var product = await context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         return product.Quantity;
     }
+
+    public async Task SubtractProductQuantityAsync(Guid id, int quantity)
+    {
+        var product = await context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        product.Quantity -= quantity;
+    }
 }

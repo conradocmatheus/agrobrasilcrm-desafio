@@ -45,6 +45,9 @@ public class MovementService(
                     $"Produto com ID {product.ProductId} não tem a quantidade suficiente em estoque para concluir a movimentação.");
             }
 
+            // Subtrai a quantidade escolhida no produto no banco
+            await productRepository.SubtractProductQuantityAsync(product.ProductId, selectedQuantity);
+            
             // Calcula o valor total
             var productPrice = await movementRepository.GetProductPriceAsync(product.ProductId);
             totalValue += productPrice * product.Quantity;

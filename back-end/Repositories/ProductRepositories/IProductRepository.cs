@@ -9,4 +9,5 @@ public interface IProductRepository
     Task<List<Product>> GetAllProductsAsync();
     Task<Product?> GetProductByIdAsync(Guid id);
     Task<int> GetProductQuantityByIdAsync(Guid id);
+    Task SubtractProductQuantityAsync(Guid id, int quantity);
 }
