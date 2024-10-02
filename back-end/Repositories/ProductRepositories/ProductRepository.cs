@@ -43,15 +43,18 @@ public class ProductRepository(AppDbContext context) : IProductRepository
         return await context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 
+    // Busca a quantidade de um produto por ID
     public async Task<int> GetProductQuantityByIdAsync(Guid id)
     {
         var product = await context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         return product.Quantity;
     }
 
+    // Subtrai a quantidade de um produto
     public async Task SubtractProductQuantityAsync(Guid id, int quantity)
     {
-        var product = await context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        var product = await context.Products.FindAsync(id);
         product.Quantity -= quantity;
+        await context.SaveChangesAsync();
     }
 }
