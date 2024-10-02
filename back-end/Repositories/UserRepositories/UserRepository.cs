@@ -37,7 +37,7 @@ public class UserRepository(AppDbContext context) : IUserRepository
     public async Task<List<User>> GetUsersByCreatedAtAsync()
     {
         return await context.Users
-            .OrderBy(user => user.CreatedAt)
+            .OrderByDescending(user => user.CreatedAt)
             .AsNoTracking()
             .ToListAsync();
     }
