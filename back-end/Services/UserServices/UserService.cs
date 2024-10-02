@@ -22,19 +22,6 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
         return mapper.Map<UserDto>(user);
     }
 
-    // Atualizar usuário por ID
-    public async Task<UserDto?> UpdateUserAsync(CreateUserDto createUserDto, Guid id)
-    {
-        if (!IsAdult(createUserDto.Birthday))
-        {
-            throw new ArgumentException("Usuário deve ser maior de 18 anos.");
-        }
-
-        var toUpdateUser = mapper.Map<User>(createUserDto);
-        var updatedUser = await userRepository.UpdateUserAsync(toUpdateUser, id);
-        return updatedUser == null ? null : mapper.Map<UserDto>(updatedUser);
-    }
-
     // Deletar usuário por ID
     public async Task<UserDto?> DeleteUserByIdAsync(Guid id)
     {

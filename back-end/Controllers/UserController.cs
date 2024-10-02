@@ -26,31 +26,6 @@ public class UserController(IUserService userService) : ControllerBase
         
         return CreatedAtAction(nameof(GetUserById), new { id = userDto.Id }, userDto);
     }
-    
-    /// <summary>
-    /// Atualiza um usuário por ID.
-    /// </summary>
-    /// <param name="createUserDto">Os dados atualizados do usuário.  (atente-se ao formato de data ano-mes-dia)</param>
-    /// <param name="id">ID do usuário a ser atualizado.</param>
-    /// <returns>O usuário atualizado.</returns>
-    /// <response code="200">Usuário atualizado com sucesso.</response>
-    /// <response code="404">Usuário não encontrado.</response>
-    /// <response code="400">Dados inválidos fornecidos.</response>
-    /// <response code="500">Erro interno inesperado.</response>
-    [HttpPut]
-    [ValidadeModel]
-    [Route("{id:Guid}")]
-    public async Task<IActionResult> UpdateUserById([FromBody] CreateUserDto createUserDto, [FromRoute] Guid id)
-    {
-        var userDto = await userService.UpdateUserAsync(createUserDto, id);
-
-        if (userDto == null)
-        {
-            return NotFound($"Usuário com ID {id} não encontrado.");
-        }
-
-        return Ok(userDto);
-    }
 
     /// <summary>
     /// Apaga um usuário por ID.
