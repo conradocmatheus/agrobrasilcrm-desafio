@@ -12,7 +12,7 @@ public class UserController(IUserService userService) : ControllerBase
     /// <summary>
     /// Cria um novo usuário.
     /// </summary>
-    /// <param name="createUserDto">Dados do usuário a ser criado.</param>
+    /// <param name="createUserDto">Dados do usuário a ser criado. (atente-se ao formato de data ano-mes-dia)</param>
     /// <returns>Um objeto de usuário criado.</returns>
     /// <response code="201">Usuário criado com sucesso.</response>
     /// <response code="400">Dados inválidos fornecidos.</response>
@@ -30,7 +30,7 @@ public class UserController(IUserService userService) : ControllerBase
     /// <summary>
     /// Atualiza um usuário por ID.
     /// </summary>
-    /// <param name="createUserDto">Os dados atualizados do usuário.</param>
+    /// <param name="createUserDto">Os dados atualizados do usuário.  (atente-se ao formato de data ano-mes-dia)</param>
     /// <param name="id">ID do usuário a ser atualizado.</param>
     /// <returns>O usuário atualizado.</returns>
     /// <response code="200">Usuário atualizado com sucesso.</response>
