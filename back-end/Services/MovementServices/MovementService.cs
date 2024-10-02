@@ -33,11 +33,16 @@ public class MovementService(
             {
                 throw new Exception($"Produto com ID {product.ProductId} não encontrado.");
             }
+
+            var selectedQuantity = createMovementDto.Products.Sum(p => p.Quantity);
+
+            var availableQuantity = await productRepository.GetProductQuantityByIdAsync(product.ProductId);
             
             // Verifica se a quantidade escolhida na movimentação bate com a quantidade de produtos
-            if (int.Parse(createMovementDto.Products.Select(p => p.Quantity)) < productRepository.GetProductQuantityByIdAsync(product.ProductId))
+            if (selectedQuantity > availableQuantity)
             {
-                
+                throw new Exception(
+                    $"Produto com ID {product.ProductId} não tem a quantidade suficiente em estoque para concluir a movimentação.");
             }
 
             // Calcula o valor total
