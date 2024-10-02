@@ -8,14 +8,15 @@ public class MovementDto
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public PaymentType PaymentType { get; set; }
+    public double TotalValue { get; set; }
     public bool IsBlocked { get; set; }
-    public List<MovementProductDto> Products { get; set; } // Lista de produtos movimentados
+    public List<MovementProductDto> Products { get; set; }
 }
 
 public class MovementProductDto
 {
-    public Guid Id { get; set; } // Id do produto
-    public string Name { get; set; }
+    public Guid Id { get; set; }
+    public string? Name { get; set; }
     public int Quantity { get; set; }
     public double Price { get; set; }
 }

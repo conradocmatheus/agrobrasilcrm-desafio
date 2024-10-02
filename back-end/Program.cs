@@ -1,5 +1,7 @@
+using System.Reflection;
 using System.Text.Json.Serialization;
 using back_end.Data;
+using back_end.Middlewares;
 using back_end.Repositories.MovementRepositories;
 using back_end.Repositories.ProductRepositories;
 using back_end.Repositories.UserRepositories;
@@ -7,6 +9,7 @@ using back_end.Services.MovementServices;
 using back_end.Services.ProductServices;
 using back_end.Services.UserServices;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace back_end;
 
@@ -26,12 +29,18 @@ public class Program
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Seu Projeto", Version = "v1" });
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            c.IncludeXmlComments(xmlPath);
+        });
 
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DesafioConnectionString"), sqlOptions =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("ConnectionString"), npgsqlOptions =>
             {
-                sqlOptions.EnableRetryOnFailure();
+                npgsqlOptions.EnableRetryOnFailure();
             }));
         builder.Services.AddAutoMapper(typeof(Program));
         
@@ -56,6 +65,9 @@ public class Program
 
         app.UseHttpsRedirection();
         app.UseAuthorization();
+        
+        // Registra o middleware de tratamento de erros
+        app.UseMiddleware<ErrorHandlerMiddleware>();
 
         app.MapControllers();
         

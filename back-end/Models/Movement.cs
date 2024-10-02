@@ -6,11 +6,12 @@ public class Movement
 {
     // Propriedades da classe Movement
     public Guid Id { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
     public PaymentType PaymentType { get; set; }
+    public double TotalValue { get; set; }
     public bool IsBlocked { get; set; }
-    
+
     // Relação muitos para muitos com Product
     public IList<MovementProduct> MovementProducts { get; set; } = new List<MovementProduct>();
 

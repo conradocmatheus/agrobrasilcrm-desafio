@@ -1,61 +1,141 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using AutoMapper;
 using back_end.DTOs.MovementDTOs;
 using back_end.Helpers;
 using back_end.Models;
 using back_end.Models.Enums;
 using back_end.Repositories.MovementRepositories;
+using back_end.Repositories.ProductRepositories;
 
 namespace back_end.Services.MovementServices;
 
-public class MovementService(IMapper mapper, IMovementRepository movementRepository) : IMovementService
+public class MovementService(
+    IMapper mapper,
+    IMovementRepository movementRepository,
+    IProductRepository productRepository) : IMovementService
 {
+    
     // Criar movimentação
     public async Task<MovementDto> CreateMovementAsync(CreateMovementDto createMovementDto)
     {
-        // Mapeia createMovementDto para Movement e atribui para movement
-        var movement = mapper.Map<Movement>(createMovementDto);
-
-        // Cria a lista de MovementProducts a partir do DTO
-        movement.MovementProducts = createMovementDto.Products.Select(p => new MovementProduct
+        if (!await movementRepository.UserExistsAsync(createMovementDto.UserId))
         {
-            ProductId = p.ProductId,
-            Quantity = p.Quantity
-        }).ToList();
+            throw new Exception("Usuário com esse id não encontrado.");
+        }
 
-        // Chama o método createMovementAsync
+        double totalValue = 0;
+
+        
+        foreach (var product in createMovementDto.Products)
+        {
+            // Verifica a existência dos produtos
+            if (!await movementRepository.ProductExistsAsync(product.ProductId))
+            {
+                throw new Exception($"Produto com ID {product.ProductId} não encontrado.");
+            }
+
+            var availableQuantity = await productRepository.GetProductQuantityByIdAsync(product.ProductId);
+            
+            // Verifica se a quantidade escolhida na movimentação bate com a quantidade de produtos
+            if (product.Quantity > availableQuantity)
+            {
+                throw new Exception(
+                    $"Produto com ID {product.ProductId} não tem a quantidade suficiente em estoque para concluir a movimentação.");
+            }
+
+            // Subtrai a quantidade escolhida no produto no banco
+            await productRepository.SubtractProductQuantityAsync(product.ProductId, product.Quantity);
+            
+            // Calcula o valor total
+            var productPrice = await movementRepository.GetProductPriceAsync(product.ProductId);
+            totalValue += productPrice * product.Quantity;
+        }
+
+        // Cria a movimentação diretamente a partir do DTO
+        var movement = new Movement
+        {
+            UserId = createMovementDto.UserId,
+            TotalValue = totalValue,
+            MovementProducts = createMovementDto.Products.Select(p => new MovementProduct
+            {
+                ProductId = p.ProductId,
+                Quantity = p.Quantity
+            }).ToList()
+        };
+
         await movementRepository.CreateMovementAsync(movement);
-
-        // Mapeia movement pra MovementDto
         return mapper.Map<MovementDto>(movement);
     }
 
     // Listar movimentações
-    public async Task<List<GetAllMovementsWithUserInfoDto>> GetAllMovementsAsync(QueryObject query)
+    public async Task<List<GetAllMovementsWithUserInfoDto>> GetAllMovementsPaginatedAsync(QueryObject query)
     {
-        try
-        {
-            // Atribui a lista que o método do repository retorna em uma var movements
-            var movements = await movementRepository.GetAllMovementsAsync(query);
-            // Retorna a lista com os objetos mapeados para DTO
-            return mapper.Map<List<GetAllMovementsWithUserInfoDto>>(movements);
-        }
-        catch (Exception e)
-        {
-            throw new InvalidOperationException("Erro ao obter lista de movimentações.", e);
-        }
+        var movements = await movementRepository.GetAllMovementsPaginatedAsync(query);
+        return mapper.Map<List<GetAllMovementsWithUserInfoDto>>(movements);
     }
-    
+
     // Lista as movimentações por tipo de pagamento
     public async Task<List<GetAllMovementsDto>> GetAllMovementsByPaymentTypeAsync(PaymentType paymentType)
     {
-        try
+        var movements = await movementRepository.GetAllMovementsByPaymentTypeAsync(paymentType);
+        return mapper.Map<List<GetAllMovementsDto>>(movements);
+    }
+
+    // Deletar uma movimentação por ID
+    public async Task<Movement?> DeleteMovementByIdAsync(Guid id)
+    {
+        var movement = await movementRepository.GetMovementByIdAsync(id);
+        if (movement == null)
         {
-            var movements = await movementRepository.GetAllMovementsByPaymentTypeAsync(paymentType);
-            return mapper.Map<List<GetAllMovementsDto>>(movements);
+            throw new InvalidOperationException("Movimentação não encontrada.");
         }
-        catch (Exception e)
+
+        return await movementRepository.DeleteMovementByIdAsync(id);
+    }
+
+    // Filtra as movimentações e retorna uma lista
+    public async Task<List<ExportMovementDto>> GetMovementsByFilterAsync(string filterType, int? month = null,
+        int? year = null)
+    {
+        switch (filterType)
         {
-            throw new InvalidOperationException("Erro ao obter usuário.", e);
+            case "last30days":
+                var movements30days = await movementRepository.GetMovementsLast30DaysAsync();
+                return mapper.Map<List<ExportMovementDto>>(movements30days);
+
+            case "byMonthYear":
+                if (month.HasValue && year.HasValue)
+                {
+                    var movementsMonthYear =
+                        await movementRepository.GetMovementsByMonthYearAsync(month.Value, year.Value);
+                    return mapper.Map<List<ExportMovementDto>>(movementsMonthYear);
+                }
+
+                throw new ArgumentException("Ano ou mês faltando no filtro.");
+
+            case "all":
+                var movementsAll = await movementRepository.GetAllMovementsAsync();
+                return mapper.Map<List<ExportMovementDto>>(movementsAll);
+            default:
+                throw new ArgumentException("Filtro inválido");
         }
+    }
+
+    // Soma de todas as movimentações de débito
+    public async Task<double> GetTotalValueDebitAsync()
+    {
+        return await movementRepository.GetTotalValueDebitAsync();
+    }
+
+    // Soma de todas as movimentações de crédito
+    public async Task<double> GetTotalValueCreditAsync()
+    {
+        return await movementRepository.GetTotalValueCreditAsync();
+    }
+
+    // Soma de todas as movimentações (crédito e débito)
+    public async Task<double> GetTotalValueMovementsAsync()
+    {
+        return await movementRepository.GetTotalValueMovementsAsync();
     }
 }

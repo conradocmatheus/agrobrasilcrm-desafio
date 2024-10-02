@@ -5,137 +5,90 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Controllers;
 
-// Mudar ordem para melhor organizacao dps
-// Melhorar os catchs, retorno errado
 [ApiController]
 [Route("api/[controller]")]
 public class UserController(IUserService userService) : ControllerBase
 {
-    // POST - User
-    // POST - /api/user
+    /// <summary>
+    /// Cria um novo usuário.
+    /// </summary>
+    /// <param name="createUserDto">Dados do usuário a ser criado. (atente-se ao formato de data ano-mes-dia)</param>
+    /// <returns>Um objeto de usuário criado.</returns>
+    /// <response code="201">Usuário criado com sucesso.</response>
+    /// <response code="400">Dados inválidos fornecidos.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpPost]
     [ValidadeModel]
-    [Route("post")]
+    [Route("")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
     {
-        // Bloco try-catch para tentar chamar o método do userService
-        try
-        {
-            // Chama o método do UserService pra criar o usuário
-            var userDto = await userService.CreateUserAsync(createUserDto);
-            // Retorna 201 se der certo
-            return CreatedAtAction(nameof(GetUserById), new { id = userDto.Id }, userDto);
-        }
-        catch (ArgumentException e) // Para argumentos inválidos
-        {
-            return BadRequest(e.Message);
-        }
-        catch (InvalidOperationException e) // Para operações inválidas
-        {
-            return BadRequest(e.Message);
-        }
-        catch (Exception e) // Para erros genéricos
-        {
-            return StatusCode(500, e.Message);
-        }
+        var userDto = await userService.CreateUserAsync(createUserDto);
+        
+        return CreatedAtAction(nameof(GetUserById), new { id = userDto.Id }, userDto);
     }
-    
-    //========================
-    // AINDA ESTA SENDO POSSIVEL ATUALIZAR E COLOCAR IDADE MENOR DE 18
-    //========================
-    // Update - User by id
-    // Update - /api/user/by-id
-    [HttpPut]
-    [ValidadeModel]
-    [Route("update/by-id/{id:Guid}")]
-    public async Task<IActionResult> UpdateUserById([FromBody] CreateUserDto createUserDto, [FromRoute] Guid id)
-    {
-        // Tenta atualizar o usuário chamando o método do service
-        try
-        {
-            var userDto = await userService.UpdateUserAsync(createUserDto, id);
 
-            if (userDto == null)
-            {
-                return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
-            }
-
-            return Ok(userDto);
-        }
-        // Se não conseguir, lança uma exception
-        catch (Exception e)
-        {
-            return BadRequest("Erro ao atualizar usuário: " + e.Message);
-        }
-    }
-    
-    // Delete - User by id
-    // Delete - /api/user/by-id
+    /// <summary>
+    /// Apaga um usuário por ID.
+    /// </summary>
+    /// <param name="id">ID do usuário a ser apagado.</param>
+    /// <returns>O usuário apagado.</returns>
+    /// <response code="200">Usuário apagado com sucesso.</response>
+    /// <response code="404">Usuário não encontrado.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpDelete]
-    [Route("delete/by-id/{id:Guid}")]
+    [Route("{id:Guid}")]
     public async Task<IActionResult> DeleteUserById([FromRoute] Guid id)
     {
-        try
-        {
-            // Atribui o usuário deletado pra deletedUser
-            var deletedUser = await userService.DeleteUserByIdAsync(id);
+        var deletedUser = await userService.DeleteUserByIdAsync(id);
 
-            if (deletedUser == null)
-            {
-                return NotFound($"Usuário com ID {id} não encontrado."); // Retorna NotFound se o usuário não existir
-            }
-
-            return Ok(deletedUser);
-        }
-        catch (Exception e)
+        if (deletedUser == null)
         {
-            return BadRequest(e.Message);
+            return NotFound($"Usuário com ID {id} não encontrado.");
         }
+
+        return Ok(deletedUser);
     }
-    
-    // GET - Users
-    // GET - /api/user/by-creation-date
+
+    /// <summary>
+    /// Retorna os usuários em ordem de criação.
+    /// </summary>
+    /// <returns>Lista de usuários ordenados pela data de criação.</returns>
+    /// <response code="200">Lista de usuários retornada com sucesso.</response>
+    /// <response code="404">Nenhum usuário encontrado.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpGet]
-    [Route("get/by-creation-date")]
+    [Route("by-creation-date")]
     public async Task<IActionResult> GetUsersByCreatedAt()
     {
-        try
+        var userCreatedAtDto = await userService.GetUsersByCreatedAtAsync();
+        
+        if (userCreatedAtDto.Count == 0)
         {
-            // Atribui a lista de usuarios pra userCreatedAtDto
-            var userCreatedAtDto = await userService.GetUsersByCreatedAtAsync();
-            // Verifica se tem algum usuário na lista
-            if (userCreatedAtDto.Count == 0)
-            {
-                return NotFound("Nenhum usuário foi encontrado");
-            }
-            return Ok(userCreatedAtDto);
+            return NotFound("Nenhum usuário foi encontrado");
         }
-        catch (Exception e)
-        {
-            return StatusCode(500, e.Message);
-        }
+
+        return Ok(userCreatedAtDto);
     }
-    
-    // GET - User by id
-    // GET - /api/user/by-id
+
+    /// <summary>
+    /// Retorna um usuário por ID.
+    /// </summary>
+    /// <param name="id">ID do usuário a ser buscado.</param>
+    /// <returns>O usuário correspondente ao ID fornecido.</returns>
+    /// <response code="200">Usuário encontrado e retornado com sucesso.</response>
+    /// <response code="404">Usuário não encontrado.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpGet]
-    [Route("get/by-id/{id:Guid}")]
+    [Route("{id:Guid}")]
     public async Task<IActionResult> GetUserById([FromRoute] Guid id)
     {
-        try
+        var selectedUser = await userService.GetUserByIdAsync(id);
+        
+        if (selectedUser == null)
         {
-            // Atribui o usuário encontrado pra selectedUser
-            var selectedUser = await userService.GetUserByIdAsync(id);
-            // Verifica se o usuário foi encontrado
-            if (selectedUser == null)
-            {
-                return NotFound($"Usuário com ID {id} não foi encontrado");
-            }
-            return Ok(selectedUser);
+            return NotFound($"Usuário com ID {id} não foi encontrado");
         }
-        catch (Exception e)
-        {
-            return StatusCode(500, "Erro interno no servidor.");
-        }
+
+        return Ok(selectedUser);
     }
 }
