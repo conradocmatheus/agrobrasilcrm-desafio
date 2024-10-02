@@ -5,7 +5,6 @@ namespace back_end.DTOs.MovementDTOs;
 public class CreateMovementDto
 {
     public PaymentType PaymentType { get; set; }
-    public bool IsBlocked { get; set; }
     public Guid UserId { get; set; }
     public List<CreateMovementProductDto> Products { get; set; }
 }
