@@ -5,13 +5,16 @@ using back_end.Helpers;
 using back_end.Models;
 using back_end.Models.Enums;
 using back_end.Repositories.MovementRepositories;
+using back_end.Repositories.ProductRepositories;
 
 namespace back_end.Services.MovementServices;
 
 public class MovementService(
     IMapper mapper,
-    IMovementRepository movementRepository) : IMovementService
+    IMovementRepository movementRepository,
+    IProductRepository productRepository) : IMovementService
 {
+    
     // Criar movimentação
     public async Task<MovementDto> CreateMovementAsync(CreateMovementDto createMovementDto)
     {
@@ -22,14 +25,22 @@ public class MovementService(
 
         double totalValue = 0;
 
-        // Calcula o valor total e verifica a existência dos produtos
+        
         foreach (var product in createMovementDto.Products)
         {
+            // Verifica a existência dos produtos
             if (!await movementRepository.ProductExistsAsync(product.ProductId))
             {
                 throw new Exception($"Produto com ID {product.ProductId} não encontrado.");
             }
+            
+            // Verifica se a quantidade escolhida na movimentação bate com a quantidade de produtos
+            if (int.Parse(createMovementDto.Products.Select(p => p.Quantity)) < productRepository.GetProductQuantityByIdAsync(product.ProductId))
+            {
+                
+            }
 
+            // Calcula o valor total
             var productPrice = await movementRepository.GetProductPriceAsync(product.ProductId);
             totalValue += productPrice * product.Quantity;
         }
