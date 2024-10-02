@@ -12,7 +12,7 @@ API back-end desenvolvida como parte de um desafio para aprendizado.
 ## Pacotes NuGet
 - OpenAPI
 - Entity Framework Core (EF Core)
-- EF Core SQL
+- EF Core PostgreSQL
 - EF Core Tools
 - CodeGeneration Design
 - Swashbuckle.AspNetCore
