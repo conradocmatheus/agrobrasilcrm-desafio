@@ -71,7 +71,7 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
     }
 
     // Método que verifica se o usuário é um adulto
-    private static bool IsAdult(DateTime birthday)
+    private static bool IsAdult(DateTimeOffset birthday)
     {
         var today = DateTime.Today;
         var userAge = today.Year - birthday.Year;

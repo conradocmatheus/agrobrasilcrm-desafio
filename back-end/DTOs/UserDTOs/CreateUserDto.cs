@@ -15,5 +15,5 @@ public class CreateUserDto
 
     [Required(ErrorMessage = "A data de nascimento é obrigatória.")]
     [DataType(DataType.Date)]
-    public required DateTime Birthday { get; set; }
+    public DateTimeOffset Birthday { get; set; }
 }

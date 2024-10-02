@@ -12,7 +12,8 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<User, UserDto>().ReverseMap();
-        CreateMap<CreateUserDto, User>().ReverseMap();
+        CreateMap<CreateUserDto, User>()
+            .ForMember(dest => dest.Birthday, opt => opt.MapFrom(src => src.Birthday.UtcDateTime));
         CreateMap<User, UserCreatedAtDto>().ReverseMap();
 
         CreateMap<Product, CreateProductDto>().ReverseMap();

@@ -9,8 +9,14 @@ namespace back_end.Controllers;
 [Route("api/[controller]")]
 public class UserController(IUserService userService) : ControllerBase
 {
-    // POST: /api/user
-    // Cria um novo usuário
+    /// <summary>
+    /// Cria um novo usuário.
+    /// </summary>
+    /// <param name="createUserDto">Os dados do usuário a serem criados.</param>
+    /// <returns>Um objeto de usuário criado.</returns>
+    /// <response code="201">Retorna o usuário criado.</response>
+    /// <response code="400">Se os dados enviados forem invalidos.</response>
+    /// <response code="500">Se ocorrer um erro inesperado.</response>
     [HttpPost]
     [ValidadeModel]
     [Route("")]

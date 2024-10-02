@@ -11,12 +11,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace back_end.Controllers;
 
+/// <summary>
+/// Controlador responsável por gerenciar movimentações.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class MovementController(IMovementService movementService) : ControllerBase
 {
-    // POST: /api/movement
-    // Cria uma nova movimentação
+    /// <summary>
+    /// Cria uma nova movimentação.
+    /// </summary>
+    /// <param name="createMovementDto">Dados necessarios para criacao da movimentacao.</param>
+    /// <returns>Um objeto de movimentação foi criado.</returns>
+    /// <response code="201">Movimentação criada.</response>
+    /// <response code="400">Dados enviados invalidos.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpPost]
     [Route("")]
     [ValidadeModel]
