@@ -12,11 +12,11 @@ public class UserController(IUserService userService) : ControllerBase
     /// <summary>
     /// Cria um novo usuário.
     /// </summary>
-    /// <param name="createUserDto">Os dados do usuário a serem criados.</param>
+    /// <param name="createUserDto">Dados do usuário a ser criado.</param>
     /// <returns>Um objeto de usuário criado.</returns>
-    /// <response code="201">Retorna o usuário criado.</response>
-    /// <response code="400">Se os dados enviados forem invalidos.</response>
-    /// <response code="500">Se ocorrer um erro inesperado.</response>
+    /// <response code="201">Usuário criado com sucesso.</response>
+    /// <response code="400">Dados inválidos fornecidos.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpPost]
     [ValidadeModel]
     [Route("")]
@@ -27,8 +27,16 @@ public class UserController(IUserService userService) : ControllerBase
         return CreatedAtAction(nameof(GetUserById), new { id = userDto.Id }, userDto);
     }
     
-    // PUT: /api/user/{id}
-    // Atualiza um usuário por ID
+    /// <summary>
+    /// Atualiza um usuário por ID.
+    /// </summary>
+    /// <param name="createUserDto">Os dados atualizados do usuário.</param>
+    /// <param name="id">ID do usuário a ser atualizado.</param>
+    /// <returns>O usuário atualizado.</returns>
+    /// <response code="200">Usuário atualizado com sucesso.</response>
+    /// <response code="404">Usuário não encontrado.</response>
+    /// <response code="400">Dados inválidos fornecidos.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpPut]
     [ValidadeModel]
     [Route("{id:Guid}")]
@@ -44,8 +52,14 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(userDto);
     }
 
-    // DELETE: /api/user/{id}
-    // Apaga um usuário por ID
+    /// <summary>
+    /// Apaga um usuário por ID.
+    /// </summary>
+    /// <param name="id">ID do usuário a ser apagado.</param>
+    /// <returns>O usuário apagado.</returns>
+    /// <response code="200">Usuário apagado com sucesso.</response>
+    /// <response code="404">Usuário não encontrado.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpDelete]
     [Route("{id:Guid}")]
     public async Task<IActionResult> DeleteUserById([FromRoute] Guid id)
@@ -60,8 +74,13 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(deletedUser);
     }
 
-    // GET: /api/user/by-creation-date
-    // Retorna os usuários em ordem de criação 
+    /// <summary>
+    /// Retorna os usuários em ordem de criação.
+    /// </summary>
+    /// <returns>Lista de usuários ordenados pela data de criação.</returns>
+    /// <response code="200">Lista de usuários retornada com sucesso.</response>
+    /// <response code="404">Nenhum usuário encontrado.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpGet]
     [Route("by-creation-date")]
     public async Task<IActionResult> GetUsersByCreatedAt()
@@ -76,8 +95,14 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(userCreatedAtDto);
     }
 
-    // GET: /api/user/{id}
-    // Retorna um usuário buscado por ID
+    /// <summary>
+    /// Retorna um usuário por ID.
+    /// </summary>
+    /// <param name="id">ID do usuário a ser buscado.</param>
+    /// <returns>O usuário correspondente ao ID fornecido.</returns>
+    /// <response code="200">Usuário encontrado e retornado com sucesso.</response>
+    /// <response code="404">Usuário não encontrado.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpGet]
     [Route("{id:Guid}")]
     public async Task<IActionResult> GetUserById([FromRoute] Guid id)

@@ -1,7 +1,5 @@
 ﻿using back_end.CustomActionFilters;
-using back_end.DTOs;
 using back_end.DTOs.ProductDTOs;
-using back_end.DTOs.UserDTOs;
 using back_end.Services.ProductServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,8 +9,14 @@ namespace back_end.Controllers;
 [Route("api/[controller]")]
 public class ProductController(IProductService productService) : ControllerBase
 {
-    // POST: /api/product
-    // Cria um novo produto
+    /// <summary>
+    /// Cria um novo produto.
+    /// </summary>
+    /// <param name="createProductDto">Dados necessários para criação do produto.</param>
+    /// <returns>Um objeto de produto foi criado.</returns>
+    /// <response code="201">Produto criado com sucesso.</response>
+    /// <response code="400">Dados enviados inválidos.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpPost]
     [ValidadeModel]
     [Route("")]
@@ -23,8 +27,16 @@ public class ProductController(IProductService productService) : ControllerBase
         return CreatedAtAction(nameof(GetProductById), new { id = productDto.Id }, productDto);
     }
 
-    // PUT: /api/product/{id}
-    // Atualiza um produto por ID
+    /// <summary>
+    /// Atualiza um produto por ID.
+    /// </summary>
+    /// <param name="updateProductDto">Dados necessários para atualização do produto.</param>
+    /// <param name="id">ID do produto a ser atualizado.</param>
+    /// <returns>O produto atualizado.</returns>
+    /// <response code="200">Produto atualizado com sucesso.</response>
+    /// <response code="404">Produto não encontrado.</response>
+    /// <response code="400">Dados enviados inválidos.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpPut]
     [ValidadeModel]
     [Route("{id:Guid}")]
@@ -41,8 +53,14 @@ public class ProductController(IProductService productService) : ControllerBase
         return Ok(productDto);
     }
 
-    // DELETE: /api/product/{id}
-    // Apaga um produto por ID
+    /// <summary>
+    /// Apaga um produto por ID.
+    /// </summary>
+    /// <param name="id">ID do produto a ser apagado.</param>
+    /// <returns>O produto apagado.</returns>
+    /// <response code="200">Produto apagado com sucesso.</response>
+    /// <response code="404">Produto não encontrado.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpDelete]
     [Route("{id:Guid}")]
     public async Task<IActionResult> DeleteProductById([FromRoute] Guid id)
@@ -57,8 +75,13 @@ public class ProductController(IProductService productService) : ControllerBase
         return Ok(deletedProduct);
     }
 
-    // GET: /api/product
-    // Retorna todos os produtos
+    /// <summary>
+    /// Retorna todos os produtos.
+    /// </summary>
+    /// <returns>Lista de produtos.</returns>
+    /// <response code="200">Lista de produtos retornada com sucesso.</response>
+    /// <response code="404">Nenhum produto encontrado.</response>
+    /// <response code="500">Erro interno inesperado.</response>
     [HttpGet]
     [Route("")]
     public async Task<IActionResult> GetAllProducts()
@@ -73,8 +96,14 @@ public class ProductController(IProductService productService) : ControllerBase
         return Ok(productDto);
     }
 
-    // GET: /api/product/{id}
-    // Retorna um produto por ID 
+    /// <summary>
+    /// Retorna um produto por ID.
+    /// </summary>
+    /// <param name="id">ID do produto a ser buscado.</param>
+    /// <returns>O produto correspondente ao ID fornecido.</returns>
+    /// <response code="200">Produto encontrado e retornado com sucesso.</response>
+    /// <response code="404">Produto não encontrado.</response>
+    /// <response code="500">Erro interno inesperado.</response> 
     [HttpGet]
     [Route("{id:Guid}")]
     public async Task<IActionResult> GetProductById(Guid id)
