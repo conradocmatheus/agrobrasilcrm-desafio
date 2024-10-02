@@ -16,24 +16,6 @@ public class ProductRepository(AppDbContext context) : IProductRepository
         return product;
     }
 
-    // Atualiza um produto no banco
-    public async Task<Product?> UpdateProductAsync(Product product, Guid id)
-    {
-        var toUpdateProduct = await context.Products.FirstOrDefaultAsync(x => x.Id == id);
-
-        if (toUpdateProduct == null)
-        {
-            return null;
-        }
-        
-        toUpdateProduct.Name = product.Name;
-        toUpdateProduct.Price = product.Price;
-        toUpdateProduct.Quantity = product.Quantity;
-
-        await context.SaveChangesAsync();
-        return toUpdateProduct;
-    }
-
     // Deleta um produto por ID
     public async Task<Product?> DeleteProductByIdAsync(Guid id)
     {

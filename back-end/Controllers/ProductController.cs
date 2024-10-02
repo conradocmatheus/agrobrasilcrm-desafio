@@ -28,32 +28,6 @@ public class ProductController(IProductService productService) : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza um produto por ID.
-    /// </summary>
-    /// <param name="updateProductDto">Dados necessários para atualização do produto.</param>
-    /// <param name="id">ID do produto a ser atualizado.</param>
-    /// <returns>O produto atualizado.</returns>
-    /// <response code="200">Produto atualizado com sucesso.</response>
-    /// <response code="404">Produto não encontrado.</response>
-    /// <response code="400">Dados enviados inválidos.</response>
-    /// <response code="500">Erro interno inesperado.</response>
-    [HttpPut]
-    [ValidadeModel]
-    [Route("{id:Guid}")]
-    public async Task<IActionResult> UpdateProductById([FromBody] UpdateProductDto updateProductDto,
-        [FromRoute] Guid id)
-    {
-        var productDto = await productService.UpdateProductAsync(updateProductDto, id);
-
-        if (productDto == null)
-        {
-            return NotFound($"Produto com  ID {id} nao encontrado");
-        }
-
-        return Ok(productDto);
-    }
-
-    /// <summary>
     /// Apaga um produto por ID.
     /// </summary>
     /// <param name="id">ID do produto a ser apagado.</param>
