@@ -1,3 +1,39 @@
+# CloudCRM Back-end Challenge
+
+## Description
+Back-end API developed as part of a learning challenge.
+
+## Technologies Used
+- .NET 8
+- Swagger
+- PostgreSQL
+- Rider IDE
+
+## NuGet Packages
+- OpenAPI
+- Entity Framework Core (EF Core)
+- EF Core PostgreSQL
+- EF Core Tools
+- CodeGeneration Design
+- Swashbuckle.AspNetCore
+- AutoMapper
+- CsvHelper
+- Migrations
+
+## How to Run the Project
+1. Clone the repository: [`GitHub link`](https://github.com/conradocmatheus/cloudcrm-desafio)
+2. [Install .NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) if you haven't already.
+3. Install the dependencies listed above.
+4. Set up the [PostgreSQL database](https://www.postgresql.org/download/).
+5. Run the migrations to prepare the database.
+6. Start the project (`dotnet run` or directly via IDE).
+7. Access the API documentation in Swagger after running the project.
+
+
+
+# =====================================
+# PT-BR
+
 # Desafio Back-end CloudCRM
 
 ## Descrição
